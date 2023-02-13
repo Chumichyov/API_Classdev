@@ -21,5 +21,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
     });
 
     Route::group(['middleware' => 'auth:api'], function () {
+        Route::group(['namespace' => 'Course'], function () {
+            Route::get('/courses', 'CourseController@index');
+            Route::post('/courses', 'CourseController@store');
+        });
     });
 });

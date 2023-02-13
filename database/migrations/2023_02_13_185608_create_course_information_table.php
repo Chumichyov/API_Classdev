@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('course_information', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('course_id');
-            $table->text('photo_path');
+            $table->text('photo_path')->nullable();
             $table->string('code', 20);
             $table->string('link', 40);
             $table->timestamps();

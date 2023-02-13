@@ -47,12 +47,7 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function coursesLeader()
-    {
-        return $this->hasMany(Course::class, 'leader_id');
-    }
-
-    public function coursesMember()
+    public function courses()
     {
         return $this->belongsToMany(Course::class, 'course_users');
     }

@@ -9,5 +9,10 @@ class CourseUser extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['course_id', 'user_id'];
+    protected $fillable = ['course_id', 'user_id', 'role_id'];
+
+    public function role()
+    {
+        return $this->belongsTo(UserRole::class, 'role_id');
+    }
 }
