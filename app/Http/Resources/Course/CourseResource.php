@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Course;
 
 use App\Http\Resources\User\UserResource;
+use App\Models\Course;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,6 +21,7 @@ class CourseResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'leader' => new UserResource(User::find($this->leader_id)),
+            'information' => new CourseInformationResource($this->whenLoaded('information')),
         ];
     }
 }

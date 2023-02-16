@@ -21,9 +21,21 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
     });
 
     Route::group(['middleware' => 'auth:api'], function () {
+        // Курс
         Route::group(['namespace' => 'Course'], function () {
             Route::get('/courses', 'CourseController@index');
             Route::post('/courses', 'CourseController@store');
+
+            // Для участника курса
+            Route::group(['middleware' => 'forMember'], function () {
+                Route::get('/courses/{course}', 'CourseController@show');
+            });
+
+            // Для лидера курса
+            Route::group(['middleware' => 'forLeader'], function () {
+                Route::patch('/courses/{course}', 'CourseController@update');
+                Route::delete('/courses/{course}', 'CourseController@destroy');
+            });
         });
     });
 });

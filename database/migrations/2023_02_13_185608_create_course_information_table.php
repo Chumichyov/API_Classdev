@@ -16,14 +16,15 @@ return new class extends Migration
         Schema::create('course_information', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('course_id');
-            $table->text('photo_path')->nullable();
+            $table->text('photo_path')->default('http://dummyimage.com/500x237');
+            $table->text('photo_name')->nullable();
             $table->string('code', 20);
             $table->string('link', 40);
             $table->timestamps();
 
             //Relationships
             $table->index('course_id', 'course_information_course_idx');
-            $table->foreign('course_id', 'course_information_course_fk')->on('courses')->references('id');
+            $table->foreign('course_id', 'course_information_course_fk')->on('courses')->references('id')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Course;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Course\StoreRequest;
+use App\Http\Requests\Course\UpdateRequest;
 use App\Http\Resources\Course\CourseResource;
 use App\Models\Course;
 use App\Models\CourseInformation;
@@ -11,7 +12,8 @@ use App\Models\CourseUser;
 use Exception;
 use Illuminate\Http\Request;
 use Faker\Factory as Faker;
-
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
 {
@@ -58,16 +60,48 @@ class CourseController extends Controller
 
     public function show(Course $course)
     {
-        //
+        return new CourseResource($course);
     }
 
-    public function update(Request $request, Course $course)
+    public function update(UpdateRequest $request, Course $course)
     {
-        //
+        $credentials = $request->validated();
+
+        //Change title and description
+        if (Arr::exists($credentials, 'title')) {
+            $course->update([
+                'title' => $credentials['title'],
+                'description' => $credentials['description'],
+            ]);
+
+            return new CourseResource($course->loadMissing('information'));
+        }
+
+        //Change photo
+        if (Arr::exists($credentials, 'image')) {
+            $imageName = time() . '.' . $credentials['image']->extension();
+
+            if ($course->information->imagePath != 'http://dummyimage.com/500x237') {
+                Storage::disk('public')->delete(substr($course->info->imagePath, 9));
+            }
+
+            $path = 'courses/course-' . $course->id . 'image';
+            $credentials['image']->storeAs('public/' . $path, $imageName);
+
+            CourseInformation::where('course_id', $course->id)
+                ->update([
+                    'photo_path' => '/storage/' . $path . '/' . $imageName,
+                    'photo_name' => $imageName,
+                ]);
+
+            return new CourseResource($course->loadMissing('information'));
+        }
     }
 
     public function destroy(Course $course)
     {
-        //
+        $course->delete();
+
+        return response([]);
     }
 }
