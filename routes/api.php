@@ -29,12 +29,23 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             // Для участника курса
             Route::group(['middleware' => 'forMember'], function () {
                 Route::get('/courses/{course}', 'CourseController@show');
+
+                Route::group(['namespace' => 'Task'], function () {
+                    Route::get('/courses/{course}/tasks', 'TaskController@index');
+                    Route::get('/courses/{course}/tasks/{task}', 'TaskController@show');
+                });
             });
 
             // Для лидера курса
             Route::group(['middleware' => 'forLeader'], function () {
                 Route::patch('/courses/{course}', 'CourseController@update');
                 Route::delete('/courses/{course}', 'CourseController@destroy');
+
+                Route::group(['namespace' => 'Task'], function () {
+                    Route::post('/courses/{course}/tasks', 'TaskController@store');
+                    Route::patch('/courses/{course}/tasks/{task}', 'TaskController@update');
+                    Route::delete('/courses/{course}/tasks/{task}', 'TaskController@destroy');
+                });
             });
         });
     });

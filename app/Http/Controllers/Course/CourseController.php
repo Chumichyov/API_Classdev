@@ -19,7 +19,7 @@ class CourseController extends Controller
 {
     public function index()
     {
-        return CourseResource::collection(auth()->user()->courses);
+        return CourseResource::collection(auth()->user()->courses->loadMissing('information'));
     }
 
     public function store(StoreRequest $request)
@@ -60,7 +60,7 @@ class CourseController extends Controller
 
     public function show(Course $course)
     {
-        return new CourseResource($course);
+        return new CourseResource($course->loadMissing('information'));
     }
 
     public function update(UpdateRequest $request, Course $course)

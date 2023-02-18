@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Course;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,12 @@ class ForLeader
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->route('course')->leader->id == auth()->user()->id) {
+        $course = $request->route('course');
+
+        gettype($course) == 'string' ? $course = Course::findOrFail($course) : '';
+
+
+        if ($course->leader->id == auth()->user()->id) {
             return $next($request);
         }
 

@@ -16,6 +16,11 @@ class Course extends Model
         return $this->hasOne(CourseInformation::class);
     }
 
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
     public function leader()
     {
         return $this->belongsTo(User::class, 'leader_id');
