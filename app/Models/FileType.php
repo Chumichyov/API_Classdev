@@ -14,6 +14,6 @@ class FileType extends Model
 
     public function files()
     {
-        return $this->belongsTo(File::class, 'file_type_id');
+        return $this->hasMany(File::class, 'file_type_id');
     }
 }

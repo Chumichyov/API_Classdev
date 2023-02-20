@@ -14,4 +14,14 @@ class Task extends Model
     {
         return $this->belongsTo(Course::class);
     }
+
+    public function decisions()
+    {
+        return $this->hasMany(Decision::class);
+    }
+
+    public function files()
+    {
+        return $this->hasMany(File::class);
+    }
 }

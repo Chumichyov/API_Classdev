@@ -13,11 +13,11 @@ class FileExtension extends Model
 
     public function files()
     {
-        return $this->belongsTo(File::class, 'file_extension_id');
+        return $this->hasMany(File::class, 'file_extension_id');
     }
 
     public function mode()
     {
-        return $this->hasOne(Mode::class);
+        return $this->belongsTo(Mode::class);
     }
 }
