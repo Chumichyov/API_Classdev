@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\User;
+namespace App\Http\Resources\File;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class ModeResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,10 +15,7 @@ class UserResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'name' => $this->name,
-            'surname' => $this->surname,
-            'email' => $this->email,
-            'role_id' => new RoleResource($this->whenLoaded('role')),
+            'title' => $this->title,
         ];
     }
 }

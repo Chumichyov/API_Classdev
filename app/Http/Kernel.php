@@ -2,8 +2,10 @@
 
 namespace App\Http;
 
-use App\Http\Middleware\ForLeader;
-use App\Http\Middleware\ForMember;
+use App\Http\Middleware\CreatorDecision;
+use App\Http\Middleware\ForMembers;
+use App\Http\Middleware\OnlyLeader;
+use App\Http\Middleware\OnlyMember;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -55,8 +57,10 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $routeMiddleware = [
-        'forMember' => ForMember::class,
-        'forLeader' => ForLeader::class,
+        'forMembers' => ForMembers::class,
+        'onlyMember' => OnlyMember::class,
+        'onlyLeader' => OnlyLeader::class,
+        'creatorDecision' => CreatorDecision::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,

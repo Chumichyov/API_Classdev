@@ -16,28 +16,28 @@ return new class extends Migration
     {
         Schema::create('modes', function (Blueprint $table) {
             $table->id();
-            $table->string('mode');
+            $table->string('title');
             $table->timestamps();
         });
 
         DB::table('modes')->insert([
-            ['mode' => 'csharp'],
-            ['mode' => 'javascript'],
-            ['mode' => 'php'],
-            ['mode' => 'html'],
-            ['mode' => 'css'],
-            ['mode' => 'text'],
-            ['mode' => 'sql'],
-            ['mode' => 'c_cpp'],
-            ['mode' => 'python'],
-            ['mode' => 'golang'],
-            ['mode' => 'json'],
-            ['mode' => 'java'],
-            ['mode' => 'kotlin'],
-            ['mode' => 'perl'],
-            ['mode' => 'rust'],
-            ['mode' => 'ruby'],
-            ['mode' => 'swift'],
+            ['title' => 'csharp'],
+            ['title' => 'javascript'],
+            ['title' => 'php'],
+            ['title' => 'html'],
+            ['title' => 'css'],
+            ['title' => 'text'],
+            ['title' => 'sql'],
+            ['title' => 'c_cpp'],
+            ['title' => 'python'],
+            ['title' => 'golang'],
+            ['title' => 'json'],
+            ['title' => 'java'],
+            ['title' => 'kotlin'],
+            ['title' => 'perl'],
+            ['title' => 'rust'],
+            ['title' => 'ruby'],
+            ['title' => 'swift'],
         ]);
     }
 

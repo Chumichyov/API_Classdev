@@ -26,25 +26,48 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/courses', 'CourseController@index');
             Route::post('/courses', 'CourseController@store');
 
-            // Для участника курса
-            Route::group(['middleware' => 'forMember'], function () {
+            // Для участника курса (Участник и лидер)
+            Route::group(['middleware' => 'forMembers'], function () {
                 Route::get('/courses/{course}', 'CourseController@show');
 
                 Route::group(['namespace' => 'Task'], function () {
                     Route::get('/courses/{course}/tasks', 'TaskController@index');
                     Route::get('/courses/{course}/tasks/{task}', 'TaskController@show');
+
+                    Route::group(['namespace' => 'Decision'], function () {
+
+                        // Для создателя ответа и лидера
+                        Route::group(['middleware' => 'creatorDecision'], function () {
+                            Route::get('courses/{course}/tasks/{task}/decisions/{decision}', 'DecisionController@show');
+                        });
+                    });
                 });
             });
 
-            // Для лидера курса
-            Route::group(['middleware' => 'forLeader'], function () {
+            // Только для участника (не лидера) курса
+            Route::group(['middleware' => 'onlyMember'], function () {
+                Route::group(['namespace' => 'Task'], function () {
+                    Route::group(['namespace' => 'Decision'], function () {
+                        Route::post('courses/{course}/tasks/{task}/decisions', 'DecisionController@store');
+                    });
+                });
+            });
+
+            // Только для лидера курса
+            Route::group(['middleware' => 'onlyLeader'], function () {
                 Route::patch('/courses/{course}', 'CourseController@update');
+                Route::post('/courses/{course}/background', 'CourseController@storeBackground');
+                Route::delete('/courses/{course}/background', 'CourseController@DeleteBackground');
                 Route::delete('/courses/{course}', 'CourseController@destroy');
 
                 Route::group(['namespace' => 'Task'], function () {
                     Route::post('/courses/{course}/tasks', 'TaskController@store');
                     Route::patch('/courses/{course}/tasks/{task}', 'TaskController@update');
                     Route::delete('/courses/{course}/tasks/{task}', 'TaskController@destroy');
+
+                    Route::group(['namespace' => 'Decision'], function () {
+                        Route::get('courses/{course}/tasks/{task}/decisions', 'DecisionController@index');
+                    });
                 });
             });
         });

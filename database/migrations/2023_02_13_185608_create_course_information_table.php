@@ -2,7 +2,9 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Faker\Factory as Faker;
 
 return new class extends Migration
 {
@@ -16,8 +18,10 @@ return new class extends Migration
         Schema::create('course_information', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('course_id');
-            $table->text('photo_path')->default('http://dummyimage.com/500x237');
-            $table->text('photo_name')->nullable();
+            $table->text('image_path')->default('http://dummyimage.com/500x237');
+            $table->text('image_name')->nullable();
+            $table->text('image_extension')->nullable();
+            $table->text('custom_image')->default(0);
             $table->string('code', 20);
             $table->string('link', 40);
             $table->timestamps();
@@ -26,6 +30,16 @@ return new class extends Migration
             $table->index('course_id', 'course_information_course_idx');
             $table->foreign('course_id', 'course_information_course_fk')->on('courses')->references('id')->onUpdate('cascade')->onDelete('cascade');
         });
+
+        $faker = Faker::create();
+
+        DB::table('course_information')->insert([
+            [
+                'course_id' => 1,
+                'code' => strtoupper($faker->bothify('??#?#?')),
+                'link' => $faker->bothify('?????##???###?????##'),
+            ],
+        ]);
     }
 
     /**

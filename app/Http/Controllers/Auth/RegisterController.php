@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Resources\User\UserResource;
 use App\Models\User;
 
 class RegisterController extends Controller
@@ -17,6 +18,6 @@ class RegisterController extends Controller
         $user = User::create($credentials);
         $token = $user->createToken('API Token')->accessToken;
 
-        return response(['user' => $user, 'token' => $token]);
+        return response(['user' => new UserResource($user), 'token' => $token]);
     }
 }

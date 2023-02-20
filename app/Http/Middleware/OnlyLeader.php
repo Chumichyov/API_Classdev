@@ -6,7 +6,7 @@ use App\Models\Course;
 use Closure;
 use Illuminate\Http\Request;
 
-class ForLeader
+class OnlyLeader
 {
     /**
      * Handle an incoming request.

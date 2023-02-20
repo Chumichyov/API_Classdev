@@ -12,16 +12,20 @@ class CourseInformationResource extends JsonResource
         if (auth()->user()->id == Course::find($this->course->id)->leader_id) {
             // For leader course
             return [
-                'photo_path' => $this->photo_path,
-                'photo_name' => $this->photo_name,
+                'image_path' => $this->image_path,
+                'image_name' => $this->image_name,
+                'image_extension' => $this->image_extension,
+                'custom_image' => $this->custom_image,
                 'code' => $this->code,
                 'link' => $this->link,
             ];
         } else {
             // For member course
             return [
-                'photo_path' => $this->photo_path,
-                'photo_name' => $this->photo_name,
+                'image_path' => $this->image_path,
+                'image_name' => $this->image_name,
+                'image_extension' => $this->image_extension,
+                'custom_image' => $this->custom_image,
             ];
         }
     }

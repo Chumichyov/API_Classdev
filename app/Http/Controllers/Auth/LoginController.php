@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Resources\User\UserResource;
 
 class LoginController extends Controller
 {
@@ -17,6 +18,6 @@ class LoginController extends Controller
 
         $token = auth()->user()->createToken('API Token')->accessToken;
 
-        return response(['user' => auth()->user(), 'token' => $token]);
+        return response(['user' => new UserResource(auth()->user()), 'token' => $token]);
     }
 }

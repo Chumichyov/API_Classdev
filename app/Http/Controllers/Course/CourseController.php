@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Course;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Course\StoreImageRequest;
 use App\Http\Requests\Course\StoreRequest;
 use App\Http\Requests\Course\UpdateRequest;
 use App\Http\Resources\Course\CourseResource;
@@ -63,6 +64,46 @@ class CourseController extends Controller
         return new CourseResource($course->loadMissing('information'));
     }
 
+    public function storeBackground(StoreImageRequest $request, Course $course)
+    {
+        $credentials = $request->validated();
+
+        $imageName = time() . '.' . $credentials['image']->extension();
+
+        if ($course->information->custom_image == 1) {
+            Storage::disk('public')->delete(substr($course->information->image_path, 9));
+        }
+
+        $path = 'courses/course-' . $course->id . '/background';
+        $credentials['image']->storeAs('public/' . $path, $imageName);
+
+        $information = CourseInformation::where('course_id', $course->id)
+            ->update([
+                'image_path' => '/storage/' . $path . '/' . $imageName,
+                'image_name' => $imageName,
+                'image_extension' => $credentials['image']->extension(),
+                'custom_image' => 1,
+            ]);
+
+        return new CourseResource($course->fresh()->loadMissing('information'));
+    }
+
+    public function deleteBackground(Course $course)
+    {
+        if ($course->information->custom_image == 1) {
+            Storage::disk('public')->delete(substr($course->information->image_path, 9));
+
+            $course->information->update([
+                'image_path' => 'http://dummyimage.com/500x237',
+                'image_name' => null,
+                'image_extension' => null,
+                'custom_image' => 0,
+            ]);
+        }
+
+        return new CourseResource($course->fresh()->loadMissing('information'));
+    }
+
     public function update(UpdateRequest $request, Course $course)
     {
         $credentials = $request->validated();
@@ -73,26 +114,6 @@ class CourseController extends Controller
                 'title' => $credentials['title'],
                 'description' => $credentials['description'],
             ]);
-
-            return new CourseResource($course->loadMissing('information'));
-        }
-
-        //Change photo
-        if (Arr::exists($credentials, 'image')) {
-            $imageName = time() . '.' . $credentials['image']->extension();
-
-            if ($course->information->imagePath != 'http://dummyimage.com/500x237') {
-                Storage::disk('public')->delete(substr($course->info->imagePath, 9));
-            }
-
-            $path = 'courses/course-' . $course->id . 'image';
-            $credentials['image']->storeAs('public/' . $path, $imageName);
-
-            CourseInformation::where('course_id', $course->id)
-                ->update([
-                    'photo_path' => '/storage/' . $path . '/' . $imageName,
-                    'photo_name' => $imageName,
-                ]);
 
             return new CourseResource($course->loadMissing('information'));
         }
