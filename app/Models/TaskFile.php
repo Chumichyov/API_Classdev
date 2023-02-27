@@ -5,16 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class File extends Model
+class TaskFile extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['file_type_id', 'task_id', 'decision_id', 'file_extension_id', 'original_name', 'file_name', 'file_path'];
-
-    public function type()
-    {
-        return $this->belongsTo(FileType::class, 'file_type_id');
-    }
+    protected $fillable = ['task_id', 'user_id', 'file_extension_id', 'original_name', 'file_name', 'file_path'];
 
     public function extension()
     {
@@ -26,8 +21,8 @@ class File extends Model
         return $this->belongsTo(Task::class);
     }
 
-    public function decision()
+    public function user()
     {
-        return $this->belongsTo(Decision::class);
+        return $this->belongsTo(User::class);
     }
 }
