@@ -24,13 +24,13 @@ return new class extends Migration
             $table->timestamps();
 
             // Relationships
-            $table->index('decision_id', 'file_decision_idx');
-            $table->index('user_id', 'file_user_idx');
-            $table->index('file_extension_id', 'file_file_extension_idx');
+            $table->index('decision_id', 'decision_file_decision_idx');
+            $table->index('user_id', 'decision_file_user_idx');
+            $table->index('file_extension_id', 'decision_file_file_extension_idx');
 
-            $table->foreign('decision_id', 'file_task_fk')->on('decisions')->references('id');
-            $table->foreign('user_id', 'file_user_fk')->on('users')->references('id');
-            $table->foreign('file_extension_id', 'file_file_extension_fk')->on('file_extensions')->references('id');
+            $table->foreign('decision_id', 'decision_file_decision_fk')->on('decisions')->references('id');
+            $table->foreign('user_id', 'decision_file_user_fk')->on('users')->references('id');
+            $table->foreign('file_extension_id', 'decision_file_file_extension_fk')->on('file_extensions')->references('id');
         });
     }
 
