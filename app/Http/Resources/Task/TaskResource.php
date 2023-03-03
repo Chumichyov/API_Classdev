@@ -3,7 +3,9 @@
 namespace App\Http\Resources\Task;
 
 use App\Http\Resources\Course\CourseResource;
+use App\Http\Resources\File\FileResource;
 use App\Models\Course;
+use App\Models\TaskFile;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TaskResource extends JsonResource
@@ -20,6 +22,7 @@ class TaskResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'course' => new CourseResource(Course::find($this->course_id)),
+            'files' => FileResource::collection($this->whenLoaded('files')),
         ];
     }
 }

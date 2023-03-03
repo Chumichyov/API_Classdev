@@ -32,7 +32,7 @@ class TaskController extends Controller
 
     public function show(Course $course, Task $task)
     {
-        return new TaskResource($task);
+        return new TaskResource($task->loadMissing('files'));
     }
 
     public function update(UpdateRequest $request, Course $course, Task $task)

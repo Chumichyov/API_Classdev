@@ -22,6 +22,6 @@ class Task extends Model
 
     public function files()
     {
-        return $this->hasMany(File::class);
+        return $this->hasMany(TaskFile::class);
     }
 }

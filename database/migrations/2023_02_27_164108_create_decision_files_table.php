@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('decision_id');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('file_extension_id');
+            $table->unsignedBigInteger('file_extension_id')->nullable();
             $table->string('original_name');
             $table->string('file_name');
             $table->string('file_path');
