@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\CreatorDecision;
+use App\Http\Middleware\CreatorDecisionAndLeader;
 use App\Http\Middleware\ForMembers;
 use App\Http\Middleware\OnlyLeader;
 use App\Http\Middleware\OnlyMember;
@@ -61,6 +62,7 @@ class Kernel extends HttpKernel
         'onlyMember' => OnlyMember::class,
         'onlyLeader' => OnlyLeader::class,
         'creatorDecision' => CreatorDecision::class,
+        'creatorDecisionAndLeader' => CreatorDecisionAndLeader::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,

@@ -7,15 +7,17 @@ use App\Models\Decision;
 use Closure;
 use Illuminate\Http\Request;
 
-class CreatorDecision
+class CreatorDecisionAndLeader
 {
     public function handle(Request $request, Closure $next)
     {
         $decision = $request->route('decision');
+        $course = $request->route('course');
 
         gettype($decision) == 'string' ? $decision = Decision::findOrFail($decision) : '';
+        gettype($course) == 'string' ? $course = Course::findOrFail($course) : '';
 
-        if (auth()->user()->id == $decision->user_id) {
+        if (auth()->user()->id == $decision->user_id || auth()->user()->id == $course->leader_id) {
             return $next($request);
         }
 

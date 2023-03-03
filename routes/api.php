@@ -34,11 +34,21 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
                     Route::get('/courses/{course}/tasks', 'TaskController@index');
                     Route::get('/courses/{course}/tasks/{task}', 'TaskController@show');
 
+                    Route::group(['namespace' => 'File'], function () {
+                        Route::get('/courses/{course}/tasks/{task}/files', 'FileController@index');
+                    });
+
                     Route::group(['namespace' => 'Decision'], function () {
 
                         // Для создателя ответа и лидера
-                        Route::group(['middleware' => 'creatorDecision'], function () {
+                        Route::group(['middleware' => 'creatorDecisionAndLeader'], function () {
                             Route::get('courses/{course}/tasks/{task}/decisions/{decision}', 'DecisionController@show');
+                        });
+
+                        // Только для создателя ответа
+                        Route::group(['middleware' => 'creatorDecision'], function () {
+                            Route::patch('courses/{course}/tasks/{task}/decisions/{decision}', 'DecisionController@update');
+                            Route::delete('courses/{course}/tasks/{task}/decisions/{decision}', 'DecisionController@destroy');
                         });
                     });
                 });
@@ -64,6 +74,12 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
                     Route::post('/courses/{course}/tasks', 'TaskController@store');
                     Route::patch('/courses/{course}/tasks/{task}', 'TaskController@update');
                     Route::delete('/courses/{course}/tasks/{task}', 'TaskController@destroy');
+
+                    Route::group(['namespace' => 'File'], function () {
+                        Route::get('/courses/{course}/tasks/{task}/files', 'FileController@index');
+                        Route::post('/courses/{course}/tasks/{task}/files', 'FileController@store');
+                        Route::delete('/courses/{course}/tasks/{task}/files/{file}', 'FileController@destroy');
+                    });
 
                     Route::group(['namespace' => 'Decision'], function () {
                         Route::get('courses/{course}/tasks/{task}/decisions', 'DecisionController@index');

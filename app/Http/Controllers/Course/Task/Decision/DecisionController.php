@@ -24,13 +24,17 @@ class DecisionController extends Controller
 
     public function store(StoreRequest $request, Course $course, Task $task)
     {
-        $credentials = $request->validated();
+        $decision = $task->decisions()->where('user_id', auth()->user()->id)->first();
 
-        $decision = Decision::create([
-            'user_id' => auth()->user()->id,
-            'task_id' => $task->id,
-            'description' => isset($credentials['description']) ? $credentials['description'] : '',
-        ]);
+        if (is_null($decision)) {
+            $credentials = $request->validated();
+
+            $decision = Decision::create([
+                'user_id' => auth()->user()->id,
+                'task_id' => $task->id,
+                'description' => isset($credentials['description']) ? $credentials['description'] : '',
+            ]);
+        }
 
         return new DecisionResource($decision);
     }

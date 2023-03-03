@@ -68,13 +68,13 @@ class CourseController extends Controller
     {
         $credentials = $request->validated();
 
-        $imageName = time() . '.' . $credentials['image']->extension();
+        $imageName = md5(microtime()) . '.' . $credentials['image']->extension();
 
         if ($course->information->custom_image == 1) {
             Storage::disk('public')->delete(substr($course->information->image_path, 9));
         }
 
-        $path = 'courses/course-' . $course->id . '/background';
+        $path = 'courses/course_' . $course->id . '/background';
         $credentials['image']->storeAs('public/' . $path, $imageName);
 
         $information = CourseInformation::where('course_id', $course->id)
