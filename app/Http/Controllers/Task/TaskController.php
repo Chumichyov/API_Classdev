@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Course\Task;
+namespace App\Http\Controllers\Task;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Task\StoreRequest;

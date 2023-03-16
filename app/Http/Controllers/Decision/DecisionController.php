@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Course\Task\Decision;
+namespace App\Http\Controllers\Decision;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Decision\StoreRequest;

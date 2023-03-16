@@ -30,4 +30,9 @@ class Decision extends Model
     {
         return $this->hasMany(DecisionFile::class);
     }
+
+    public function folders()
+    {
+        return $this->hasMany(DecisionFolder::class);
+    }
 }

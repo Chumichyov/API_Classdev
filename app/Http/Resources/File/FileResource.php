@@ -17,7 +17,7 @@ class FileResource extends JsonResource
         return [
             'task' => new TaskResource($this->whenLoaded('task')),
             'decision' => new DecisionResource($this->whenLoaded('decision')),
-            'user' => new UserResource(User::find($this->user_id)),
+            'user' => new UserResource($this->whenLoaded('user')),
             'extension' => new FileExtensionResource(FileExtension::find($this->file_extension_id)),
             'original_name' => $this->original_name,
             'file_name' => $this->file_name,

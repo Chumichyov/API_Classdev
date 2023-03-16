@@ -14,6 +14,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Faker\Factory as Faker;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
@@ -47,11 +48,23 @@ class CourseController extends Controller
                 $code = $faker->bothify('??#?#?');
             } while (CourseInformation::where('code', $code)->first() !== null);
 
+            do {
+                $background = $faker->numberBetween(1, 3);
+            } while (!Storage::exists('/public/backgrounds/' . $background . '.png'));
+
             CourseInformation::create([
                 'course_id' => $course->id,
+                'image_path' => '/storage/backgrounds/' . $background . '.png',
+                'image_name' => $background . '.png',
+                'image_extension' => 'png',
                 'code' => $code,
                 'link' => $link
             ]);
+
+            $path = '/public/courses/course_' . $course->id;
+
+            //Main course folder
+            Storage::makeDirectory($path);
 
             return new CourseResource($course);
         } catch (Exception $e) {
@@ -62,46 +75,6 @@ class CourseController extends Controller
     public function show(Course $course)
     {
         return new CourseResource($course->loadMissing('information'));
-    }
-
-    public function storeBackground(StoreImageRequest $request, Course $course)
-    {
-        $credentials = $request->validated();
-
-        $imageName = md5(microtime()) . '.' . $credentials['image']->extension();
-
-        if ($course->information->custom_image == 1) {
-            Storage::disk('public')->delete(substr($course->information->image_path, 9));
-        }
-
-        $path = 'courses/course_' . $course->id . '/background';
-        $credentials['image']->storeAs('public/' . $path, $imageName);
-
-        $information = CourseInformation::where('course_id', $course->id)
-            ->update([
-                'image_path' => '/storage/' . $path . '/' . $imageName,
-                'image_name' => $imageName,
-                'image_extension' => $credentials['image']->extension(),
-                'custom_image' => 1,
-            ]);
-
-        return new CourseResource($course->fresh()->loadMissing('information'));
-    }
-
-    public function deleteBackground(Course $course)
-    {
-        if ($course->information->custom_image == 1) {
-            Storage::disk('public')->delete(substr($course->information->image_path, 9));
-
-            $course->information->update([
-                'image_path' => 'http://dummyimage.com/500x237',
-                'image_name' => null,
-                'image_extension' => null,
-                'custom_image' => 0,
-            ]);
-        }
-
-        return new CourseResource($course->fresh()->loadMissing('information'));
     }
 
     public function update(UpdateRequest $request, Course $course)

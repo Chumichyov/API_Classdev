@@ -18,7 +18,7 @@ return new class extends Migration
         Schema::create('course_information', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('course_id');
-            $table->text('image_path')->default('http://dummyimage.com/500x237');
+            $table->text('image_path')->nullable();
             $table->text('image_name')->nullable();
             $table->text('image_extension')->nullable();
             $table->text('custom_image')->default(0);
@@ -36,6 +36,9 @@ return new class extends Migration
         DB::table('course_information')->insert([
             [
                 'course_id' => 1,
+                'image_path' => '/storage/backgrounds/1.png',
+                'image_name' => '1.png',
+                'image_extension' => 'png',
                 'code' => strtoupper($faker->bothify('??#?#?')),
                 'link' => $faker->bothify('?????##???###?????##'),
             ],
