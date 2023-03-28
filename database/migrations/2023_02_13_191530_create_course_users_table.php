@@ -47,6 +47,11 @@ return new class extends Migration
                 'course_id' => 1,
                 'role_id' => 1,
             ],
+            [
+                'user_id' => 4,
+                'course_id' => 2,
+                'role_id' => 1,
+            ],
         ]);
     }
 

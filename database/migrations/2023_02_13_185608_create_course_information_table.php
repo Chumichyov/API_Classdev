@@ -22,8 +22,8 @@ return new class extends Migration
             $table->text('image_name')->nullable();
             $table->text('image_extension')->nullable();
             $table->text('custom_image')->default(0);
-            $table->string('code', 20);
-            $table->string('link', 40);
+            $table->string('code', 20)->unique();
+            $table->string('link', 40)->unique();
             $table->timestamps();
 
             //Relationships

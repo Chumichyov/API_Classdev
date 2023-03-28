@@ -88,9 +88,9 @@ class TaskFileController extends Controller
                 }
             }
 
-            return response(['success_message' => 'Файлы успешно загружены.']);
+            return response(['success_message' => 'Файлы успешно загружены']);
         } catch (Exception $e) {
-            return response(['error_message' => 'Непредвиденная ошибка. Пожалуйста, повторите попытку.']);
+            return response(['error_message' => 'Непредвиденная ошибка. Пожалуйста, повторите попытку']);
         }
     }
 
@@ -112,10 +112,10 @@ class TaskFileController extends Controller
 
                 Storage::disk('public')->delete($path);
                 $file->delete();
-                return response(['success_message' => 'Файл успешно удален.']);
+                return response(['success_message' => 'Файл успешно удален']);
             }
         } catch (Exception $e) {
-            return response(['error_message' => 'Непредвиденная ошибка. Пожалуйста, повторите попытку.']);
+            return response(['error_message' => 'Непредвиденная ошибка. Пожалуйста, повторите попытку']);
         }
     }
 }

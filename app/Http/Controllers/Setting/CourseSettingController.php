@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Setting;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Course\StoreImageRequest;
+use App\Http\Requests\Setting\StoreImageRequest;
 use App\Http\Resources\Course\CourseResource;
+use App\Http\Resources\Invitation\InvitationResource;
 use App\Models\Course;
 use App\Models\CourseInformation;
+use App\Models\Invitation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Faker\Factory as Faker;
@@ -57,5 +59,10 @@ class CourseSettingController extends Controller
         }
 
         return new CourseResource($course->fresh()->loadMissing('information'));
+    }
+
+    public function getInvitations(Course $course)
+    {
+        return InvitationResource::collection(Invitation::where('course_id', $course->id)->get());
     }
 }

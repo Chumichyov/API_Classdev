@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Course;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Course\ConnectionRequest;
+use App\Http\Requests\Course\InvitationRequest;
 use App\Http\Requests\Course\StoreImageRequest;
 use App\Http\Requests\Course\StoreRequest;
 use App\Http\Requests\Course\UpdateRequest;
@@ -21,7 +23,7 @@ class CourseController extends Controller
 {
     public function index()
     {
-        return CourseResource::collection(auth()->user()->courses->loadMissing('information'));
+        return CourseResource::collection(auth()->user()->courses);
     }
 
     public function store(StoreRequest $request)
@@ -97,5 +99,44 @@ class CourseController extends Controller
         $course->delete();
 
         return response([]);
+    }
+
+    public function connection(ConnectionRequest $request)
+    {
+        $credentials = $request->validated();
+        $link = $request->link;
+
+        if (isset($credentials['code'])) {
+            $course = CourseInformation::where('code', $credentials['code'])->first();
+        }
+
+        if ($link) {
+            $course = CourseInformation::where('link', $link)->first();
+        }
+
+        if (!is_null($course)) {
+
+            if (!is_null($course->course->members->where('id', auth()->user()->id)->first())) {
+                return response(['error_message' => 'Вы уже состоите в данном курсе']);
+            }
+
+            CourseUser::create([
+                'course_id' => $course->id,
+                'user_id' => auth()->user()->id,
+            ]);
+        }
+
+        return response(['success_message' => 'Вы успешно присоединились к курсу']);
+    }
+
+    public function leave(Course $course)
+    {
+        $member = CourseUser::where('user_id', auth()->user()->id)->where('course_id', $course->id)->first();
+
+        if ($member) {
+            $member->delete();
+        }
+
+        return response(['success_message' => 'Вы успешно покинули курс']);
     }
 }

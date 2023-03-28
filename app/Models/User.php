@@ -57,4 +57,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Decision::class);
     }
+
+    public function invitations()
+    {
+        return $this->hasMany(Invitation::class);
+    }
 }

@@ -17,8 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::group(['namespace' => 'App\Http\Controllers'], function () {
     // Для неавторизованных
     Route::group(['namespace' => 'Auth'], function () {
-        Route::post('/register', 'RegisterController');
         Route::post('/login', 'LoginController');
+        Route::post('/register', 'RegisterController');
     });
 
     // -----------------------------------------------------------------------------------------------
@@ -29,6 +29,13 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::group(['namespace' => 'Course'], function () {
             Route::get('/courses', 'CourseController@index');
             Route::post('/courses', 'CourseController@store');
+            Route::post('/connection', 'CourseController@connection');
+            Route::post('/connection/{link}', 'CourseController@connection');
+        });
+
+        Route::group(['namespace' => 'Invitation'], function () {
+            Route::post('/invitations/{invitation}', 'InvitationController@accept');
+            Route::get('/invitations', 'InvitationController@index');
         });
 
         // --------------------------------------------------------------------------------------------
@@ -37,6 +44,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::group(['middleware' => 'forMembers'], function () {
             Route::group(['namespace' => 'Course'], function () {
                 Route::get('/courses/{course}', 'CourseController@show');
+                Route::post('/courses/{course}/leave', 'CourseController@leave');
             });
 
             Route::group(['namespace' => 'Decision'], function () {
@@ -134,6 +142,10 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
                 Route::delete('/courses/{course}', 'CourseController@destroy');
             });
 
+            Route::group(['namespace' => 'Invitation'], function () {
+                Route::post('/courses/{course}/invitations', 'InvitationController@store');
+            });
+
             Route::group(['namespace' => 'Decision'], function () {
                 Route::get('/courses/{course}/tasks/{task}/decisions', 'DecisionController@index');
             });
@@ -146,6 +158,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
 
             Route::group(['namespace' => 'Setting'], function () {
                 Route::post('/courses/{course}/settings/background', 'CourseSettingController@storeBackground');
+                Route::get('/courses/{course}/settings/invitations', 'CourseSettingController@getInvitations');
                 Route::delete('/courses/{course}/settings/background', 'CourseSettingController@DeleteBackground');
             });
 
