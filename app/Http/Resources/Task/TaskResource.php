@@ -21,7 +21,7 @@ class TaskResource extends JsonResource
         return [
             'title' => $this->title,
             'description' => $this->description,
-            'course' => new CourseResource(Course::find($this->course_id)),
+            'course' => new CourseResource($this->whenLoaded('course')),
             'files' => FileResource::collection($this->whenLoaded('files')),
         ];
     }

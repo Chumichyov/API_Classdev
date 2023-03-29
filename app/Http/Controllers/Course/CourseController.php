@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         return CourseResource::collection(auth()->user()->courses);
     }

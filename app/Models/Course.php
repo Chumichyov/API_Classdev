@@ -35,4 +35,9 @@ class Course extends Model
     {
         return $this->hasMany(Invitation::class);
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
 }

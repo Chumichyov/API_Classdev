@@ -38,6 +38,10 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/invitations', 'InvitationController@index');
         });
 
+        Route::group(['namespace' => 'Notification'], function () {
+            Route::get('/notifications', 'NotificationController@index');
+        });
+
         // --------------------------------------------------------------------------------------------
 
         // Для участников

@@ -24,4 +24,9 @@ class Task extends Model
     {
         return $this->hasMany(TaskFile::class);
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
 }

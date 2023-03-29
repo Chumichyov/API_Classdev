@@ -26,6 +26,13 @@ class TaskController extends Controller
             'description' => isset($credentials['title']) ? $credentials['title'] : '',
             'course_id' => $course->id
         ]);
+        foreach ($course->members->where("id", "!=", $course->leader_id) as $member) {
+            $task->notifications()->create([
+                'user_id' => $member->id,
+                'course_id' => $course->id,
+                'message' => "Пользователь {$course->leader->name} {$course->leader->surname} добавил новое задание: '{$task->title}'",
+            ]);
+        };
 
         return new TaskResource($task);
     }
