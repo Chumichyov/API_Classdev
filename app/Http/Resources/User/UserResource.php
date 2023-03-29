@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\User;
 
+use App\Models\UserInformation;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
@@ -18,6 +19,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'surname' => $this->surname,
             'email' => $this->email,
+            'information' => new UserInformationResource(UserInformation::find($this->id)),
             'role_id' => new RoleResource($this->whenLoaded('role')),
         ];
     }
