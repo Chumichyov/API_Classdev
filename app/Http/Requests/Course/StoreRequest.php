@@ -25,7 +25,8 @@ class StoreRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:64'],
-            'description' => ['required', 'string', 'max:255'],
+            'description' => ['max:255'],
+            'group' => ['required', 'string', 'max:16'],
         ];
     }
 }

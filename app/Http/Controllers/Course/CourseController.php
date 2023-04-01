@@ -31,7 +31,7 @@ class CourseController extends Controller
         try {
             $credentials = $request->validated();
             $credentials['leader_id'] = auth()->user()->id;
-
+            dd($credentials);
             $course = Course::create($credentials);
 
             CourseUser::create([

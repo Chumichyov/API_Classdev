@@ -18,7 +18,8 @@ return new class extends Migration
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('description');
+            $table->string('group');
+            $table->string('description')->nullable();
             $table->unsignedBigInteger('leader_id');
             $table->timestamps();
 
@@ -30,11 +31,13 @@ return new class extends Migration
         DB::table('courses')->insert([
             [
                 'title' => '49ИС1-2Д Создание веб-приложений',
+                'group' => '49ИС1-2Д',
                 'description' => 'Создание веб-приложений на основе MVC системы Laravel и фремфорка для создания пользовательский веб-приложений Vue. В данном курсе вы научитесь создавать API систему и научитесь подключаться к ней используя Vue.',
                 'leader_id' => 2,
             ],
             [
                 'title' => '49ИС1-2Д Оптимизация веб-приложений',
+                'group' => '49ИС1-2Д',
                 'description' => 'Создание веб-приложений на основе MVC системы Laravel и фремфорка для создания пользовательский веб-приложений Vue. В данном курсе вы научитесь создавать API систему и научитесь подключаться к ней используя Vue.',
                 'leader_id' => 2,
             ],

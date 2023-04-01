@@ -18,7 +18,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('bio')->nullable();
-            $table->string('photo_path');
+            $table->string('photo_path')->default('storage/photo/1.jpg');
             $table->timestamps();
 
             //Relationships
@@ -29,19 +29,19 @@ return new class extends Migration
         DB::table('user_information')->insert([
             [
                 'user_id' => 1,
-                'photo_path' => '/storage/photo/1.jpg'
+                'photo_path' => 'storage/photo/1.jpg'
             ],
             [
                 'user_id' => 2,
-                'photo_path' => '/storage/photo/1.jpg'
+                'photo_path' => 'storage/photo/1.jpg'
             ],
             [
                 'user_id' => 3,
-                'photo_path' => '/storage/photo/1.jpg'
+                'photo_path' => 'storage/photo/1.jpg'
             ],
             [
                 'user_id' => 4,
-                'photo_path' => '/storage/photo/1.jpg'
+                'photo_path' => 'storage/photo/1.jpg'
             ]
         ]);
     }

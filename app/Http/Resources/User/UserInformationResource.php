@@ -14,15 +14,15 @@ class UserInformationResource extends JsonResource
      */
     public function toArray($request)
     {
-        if (auth()->user()->id == $this->user_id) {
-            return [
-                "bio" => $this->bio,
-                "photo_path" => $this->photo_path
-            ];
-        } else {
-            return [
-                "photo_path" => $this->photo_path
-            ];
-        }
+        // if (auth()->user()->id == $this->user_id) {
+        return [
+            "bio" => $this->bio,
+            "photo_path" => $this->photo_path
+        ];
+        // } else {
+        //     return [
+        //         "photo_path" => $this->photo_path
+        //     ];
+        // }
     }
 }

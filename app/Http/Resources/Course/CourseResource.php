@@ -20,6 +20,7 @@ class CourseResource extends JsonResource
         return [
             'title' => $this->title,
             'description' => $this->description,
+            'group' => $this->description,
             'leader' => new UserResource(User::find($this->leader_id)),
             'information' => new CourseInformationResource($this->whenLoaded('information')),
         ];
