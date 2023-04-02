@@ -12,6 +12,7 @@ class LoginController extends Controller
     public function __invoke(LoginRequest $request)
     {
         $credentials  = $request->validated();
+        dd($credentials);
 
         if (!auth()->attempt($credentials)) {
             throw new GeneralJsonException('Неправильный логин и/или пароль', 422);

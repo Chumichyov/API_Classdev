@@ -39,7 +39,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         });
 
         Route::group(['namespace' => 'Notification'], function () {
-            Route::get('/notifications', 'NotificationController@index');
+            Route::post('/notifications', 'NotificationController@index');
         });
 
         // --------------------------------------------------------------------------------------------
