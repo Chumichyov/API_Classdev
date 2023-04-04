@@ -25,7 +25,8 @@ class IndexRequest extends FormRequest
     {
         return [
             'page' => ['required', 'integer'],
-            'type' => ['required', 'string']
+            'type' => ['required', 'string'],
+            'search' => ['string']
         ];
     }
 }

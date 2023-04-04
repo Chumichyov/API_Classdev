@@ -28,9 +28,10 @@ class TaskController extends Controller
         ]);
         foreach ($course->members->where("id", "!=", $course->leader_id) as $member) {
             $task->notifications()->create([
-                'user_id' => $member->id,
+                'type_id' => 3,
+                'recipient_id' => $member->id,
                 'course_id' => $course->id,
-                'message' => "Пользователь {$course->leader->name} {$course->leader->surname} добавил новое задание: '{$task->title}'",
+                'message' => "В курсе '{$course->title}' выложено новое задание: '{$task->title}'",
             ]);
         };
 

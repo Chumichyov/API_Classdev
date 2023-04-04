@@ -29,4 +29,9 @@ class Notification extends Model
     {
         return $this->belongsTo(Decision::class);
     }
+
+    public function type()
+    {
+        return $this->belongsTo(NotificationType::class, 'type_id');
+    }
 }

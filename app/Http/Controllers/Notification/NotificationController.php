@@ -16,21 +16,31 @@ class NotificationController extends Controller
         $credentials  = $request->validated();
         if ($credentials['type'] == 'Inbox') {
             //All
-            $notifications = Notification::orderBy('created_at', 'desc')->where('user_id', auth()->user()->id)->paginate(10, ['*'], 'page', $credentials['page']);
+            if ($credentials['search']) {
+            } else
+                $notifications = Notification::orderBy('created_at', 'desc')->where('user_id', auth()->user()->id)->paginate(10, ['*'], 'page', $credentials['page']);
         } else if ($credentials['type'] == 'Course') {
             //Course
-            $notifications = Notification::orderBy('created_at', 'desc')->where('user_id', auth()->user()->id)->where('course_id', '!=', null)->paginate(10, ['*'], 'page', $credentials['page']);
+            if ($credentials['search']) {
+            } else
+                $notifications = Notification::orderBy('created_at', 'desc')->where('user_id', auth()->user()->id)->where('course_id', '!=', null)->paginate(10, ['*'], 'page', $credentials['page']);
         } else if ($credentials['type'] == 'Task') {
             //Task
-            $notifications = Notification::orderBy('created_at', 'desc')->where('user_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '=', null)->paginate(10, ['*'], 'page', $credentials['page']);
+            if ($credentials['search']) {
+            } else
+                $notifications = Notification::orderBy('created_at', 'desc')->where('user_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '=', null)->paginate(10, ['*'], 'page', $credentials['page']);
         } else if ($credentials['type'] == 'Decision') {
-            //Task
-            $notifications = Notification::orderBy('created_at', 'desc')->where('user_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '!=', null)->paginate(10, ['*'], 'page', $credentials['page']);
+            //Decision
+            if ($credentials['search']) {
+            } else
+                $notifications = Notification::orderBy('created_at', 'desc')->where('user_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '!=', null)->paginate(10, ['*'], 'page', $credentials['page']);
         } else if ($credentials['type'] == 'Messenger') {
-            //Task
+            //Messenger
             // $notifications = Notification::orderBy('created_at', 'desc')->where('user_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision', '!=', null)->paginate(10, ['*'], 'page', $credentials['page']);
         } else {
-            $notifications = Notification::orderBy('created_at', 'desc')->where('user_id', auth()->user()->id)->paginate(10, ['*'], 'page', $credentials['page']);
+            if ($credentials['search']) {
+            } else
+                $notifications = Notification::orderBy('created_at', 'desc')->where('user_id', auth()->user()->id)->paginate(10, ['*'], 'page', $credentials['page']);
         }
 
         $notifications->loadMissing([
