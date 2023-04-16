@@ -23,7 +23,7 @@ return new class extends Migration
 
             //Relationships
             $table->index('user_id', 'user_information_user_idx');
-            $table->foreign('user_id', 'user_information_user_fk')->on('users')->references('id');
+            $table->foreign('user_id', 'user_information_user_fk')->on('users')->references('id')->onUpdate('cascade')->onDelete('cascade');
         });
 
         DB::table('user_information')->insert([

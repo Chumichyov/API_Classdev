@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     use HasFactory;
-    protected $fillable = ['course_id', 'title', 'description'];
+    protected $fillable = ['course_id', 'title', 'description', 'type_id'];
 
     public function course()
     {
@@ -22,11 +22,21 @@ class Task extends Model
 
     public function files()
     {
-        return $this->hasMany(TaskFile::class);
+        return $this->hasMany(File::class);
+    }
+
+    public function folders()
+    {
+        return $this->hasMany(Folder::class);
     }
 
     public function notifications()
     {
         return $this->hasMany(Notification::class);
+    }
+
+    public function type()
+    {
+        return $this->belongsTo(TaskType::class);
     }
 }

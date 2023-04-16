@@ -38,8 +38,13 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/invitations', 'InvitationController@index');
         });
 
+        Route::group(['namespace' => 'User'], function () {
+            Route::post('/user', 'UserController@show');
+        });
+
         Route::group(['namespace' => 'Notification'], function () {
             Route::post('/notifications', 'NotificationController@index');
+            Route::post('/notifications/default', 'NotificationController@default');
         });
 
         // --------------------------------------------------------------------------------------------
@@ -61,8 +66,12 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::group(['namespace' => 'Setting'], function () {
             });
 
+            Route::group(['namespace' => 'Folder'], function () {
+                Route::get('/courses/{course}/tasks/{task}/folders/{folder}', 'FolderController@taskShow');
+            });
+
             Route::group(['namespace' => 'Task'], function () {
-                Route::get('/courses/{course}/tasks', 'TaskController@index');
+                Route::post('/courses/{course}/tasks', 'TaskController@index');
                 Route::get('/courses/{course}/tasks/{task}', 'TaskController@show');
             });
         });
@@ -167,7 +176,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             });
 
             Route::group(['namespace' => 'Task'], function () {
-                Route::post('/courses/{course}/tasks', 'TaskController@store');
+                Route::post('/courses/{course}/tasks/store', 'TaskController@store');
                 Route::patch('/courses/{course}/tasks/{task}', 'TaskController@update');
                 Route::delete('/courses/{course}/tasks/{task}', 'TaskController@destroy');
             });

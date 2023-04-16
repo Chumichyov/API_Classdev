@@ -29,14 +29,27 @@ class TaskFileController extends Controller
             foreach ($credentials['files'] as $file) {
                 $extension = $file->getClientOriginalExtension();
                 $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-
                 if ($extension == 'zip') {
                     $path = 'courses/course_' . $course->id . '/task_' . $task->id . '/files' . '/' . $originalName;
+
+                    if (Folder::where('task_id', $task->id)->where('folder_id', 'null')->count() != 0) {
+                        $main = Folder::where('task_id', $task->id)->where('folder_id', 'null')->get();
+                    } else {
+                        $main = Folder::create([
+                            'task_id' => $task->id,
+                            'folder_id' => null,
+                            'original_name' => 'files',
+                            'folder_path' => '/storage/' . 'public/courses/course_' . $course->id . '/task_' . $task->id . '/files'
+                        ]);
+                    }
+
                     Folder::create([
                         'task_id' => $task->id,
-                        'folder_id' => null,
+                        'folder_id' => $main->id,
+                        'original_name' => $originalName,
                         'folder_path' => '/storage/' . 'public/' . $path
                     ]);
+
 
                     $zip = new ZipArchive();
                     $status = $zip->open($file->getRealPath());
@@ -51,6 +64,7 @@ class TaskFileController extends Controller
                         Folder::create([
                             'task_id' => $task->id,
                             'folder_id' => Folder::where('folder_path', '/storage/' . pathinfo($zipFolder, PATHINFO_DIRNAME))->first()->id,
+                            'original_name' => pathinfo($zipFolder, PATHINFO_BASENAME),
                             'folder_path' => '/storage/' . $zipFolder
                         ]);
                     }
@@ -64,7 +78,7 @@ class TaskFileController extends Controller
                             'user_id' => auth()->user()->id,
                             'folder_id' => Folder::where('folder_path', '/storage/' . pathinfo($zipFile, PATHINFO_DIRNAME))->first()->id,
                             'file_extension_id' => !is_null(FileExtension::where('extension', pathinfo($zipFile, PATHINFO_EXTENSION))->first()) ? FileExtension::where('extension', pathinfo($zipFile, PATHINFO_EXTENSION))->first()->id : null,
-                            'original_name' => pathinfo($zipFile, PATHINFO_FILENAME),
+                            'original_name' => pathinfo($zipFile, PATHINFO_BASENAME),
                             'file_name' => $fileName,
                             'file_path' => '/storage/' . pathinfo($zipFile, PATHINFO_DIRNAME) . '/' . $fileName,
                         ]);
@@ -74,11 +88,23 @@ class TaskFileController extends Controller
                 } else {
                     $path = 'courses/course_' . $course->id . '/task_' . $task->id . '/files';
 
+                    if (Folder::where('task_id', $task->id)->where('folder_id', null)->count() != 0) {
+                        $main = Folder::where('task_id', $task->id)->where('folder_id', null)->first();
+                    } else {
+                        $main = Folder::create([
+                            'task_id' => $task->id,
+                            'folder_id' => null,
+                            'original_name' => $originalName,
+                            'folder_path' => '/storage/' . 'public/courses/course_' . $course->id . '/task_' . $task->id . '/files'
+                        ]);
+                    }
+
                     $fileName = md5(microtime()) . '.' . $extension;
                     $sendedFile = $file->storeAs('public/' . $path, $fileName);
 
                     File::create([
                         'task_id' => $task->id,
+                        'folder_id' => $main->id,
                         'user_id' => auth()->user()->id,
                         'file_extension_id' => !is_null(FileExtension::where('extension', $extension)->first()) ? FileExtension::where('extension', $extension)->first()->id : null,
                         'original_name' => $file->getClientOriginalName(),

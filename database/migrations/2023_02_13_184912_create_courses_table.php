@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -34,12 +35,14 @@ return new class extends Migration
                 'group' => '49ИС1-2Д',
                 'description' => 'Создание веб-приложений на основе MVC системы Laravel и фремфорка для создания пользовательский веб-приложений Vue. В данном курсе вы научитесь создавать API систему и научитесь подключаться к ней используя Vue.',
                 'leader_id' => 2,
+                'created_at' => Carbon::now()->toDateTimeString()
             ],
             [
                 'title' => 'Оптимизация веб-приложений',
                 'group' => '49ИС1-2Д',
                 'description' => 'Создание веб-приложений на основе MVC системы Laravel и фремфорка для создания пользовательский веб-приложений Vue. В данном курсе вы научитесь создавать API систему и научитесь подключаться к ней используя Vue.',
                 'leader_id' => 2,
+                'created_at' => Carbon::now()->toDateTimeString()
             ],
         ]);
 

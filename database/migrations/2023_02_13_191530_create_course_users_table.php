@@ -28,7 +28,7 @@ return new class extends Migration
 
             $table->foreign('user_id', 'course_user_user_fk')->on('users')->references('id')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('course_id', 'course_user_course_fk')->on('courses')->references('id')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('role_id', 'course_user_role_fk')->on('user_roles')->references('id');
+            $table->foreign('role_id', 'course_user_role_fk')->on('course_roles')->references('id');
         });
 
         DB::table('course_users')->insert([

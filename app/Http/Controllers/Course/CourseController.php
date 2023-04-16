@@ -75,7 +75,12 @@ class CourseController extends Controller
 
     public function show(Course $course)
     {
-        return new CourseResource($course->loadMissing('information'));
+
+        $course->loadMissing([
+            'information',
+        ]);
+
+        return new CourseResource($course);
     }
 
     public function update(UpdateRequest $request, Course $course)

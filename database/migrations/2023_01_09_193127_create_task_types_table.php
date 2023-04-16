@@ -14,14 +14,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('user_roles', function (Blueprint $table) {
+        Schema::create('task_types', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->timestamps();
         });
 
-        DB::table('user_roles')->insert([
-            ['title' => 'member'], ['title' => 'leader']
+        DB::table('task_types')->insert([
+            ["title" => 'Задание'],
+            ["title" => 'Материал'],
         ]);
     }
 
@@ -32,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_roles');
+        Schema::dropIfExists('task_types');
     }
 };

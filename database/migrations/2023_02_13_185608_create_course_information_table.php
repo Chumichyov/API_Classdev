@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -41,6 +42,7 @@ return new class extends Migration
                 'image_extension' => 'png',
                 'code' => strtoupper($faker->bothify('??#?#?')),
                 'link' => $faker->bothify('?????##???###?????##'),
+                'created_at' => Carbon::now()->toDateTimeString()
             ],
         ]);
     }

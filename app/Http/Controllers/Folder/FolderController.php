@@ -10,7 +10,7 @@ use App\Models\Folder;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
-class DecisionFolderController extends Controller
+class FolderController extends Controller
 {
     public function index()
     {
@@ -25,7 +25,6 @@ class DecisionFolderController extends Controller
     public function decisionShow(Course $course, Task $task, Decision $decision, Folder $folder)
     {
         $folder->loadMissing([
-            'decision',
             'folders',
             'files'
         ]);
@@ -35,11 +34,13 @@ class DecisionFolderController extends Controller
 
     public function taskShow(Course $course, Task $task, Folder $folder)
     {
+        // dd($folder);
         $folder->loadMissing([
-            'task',
             'folders',
+            'folder',
             'files'
         ]);
+
 
         return new FolderResource($folder);
     }

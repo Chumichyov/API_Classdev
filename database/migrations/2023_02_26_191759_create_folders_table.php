@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('task_id')->nullable();
             $table->unsignedBigInteger('decision_id')->nullable();
             $table->unsignedBigInteger('folder_id')->nullable();
+            $table->string('original_name');
             $table->string('folder_path')->unique();
             $table->timestamps();
 
