@@ -44,6 +44,15 @@ return new class extends Migration
                 'link' => $faker->bothify('?????##???###?????##'),
                 'created_at' => Carbon::now()->toDateTimeString()
             ],
+            [
+                'course_id' => 2,
+                'image_path' => '/storage/backgrounds/1.png',
+                'image_name' => '1.png',
+                'image_extension' => 'png',
+                'code' => strtoupper($faker->bothify('??#?#?')),
+                'link' => $faker->bothify('?????##???###?????##'),
+                'created_at' => Carbon::now()->toDateTimeString()
+            ],
         ]);
     }
 

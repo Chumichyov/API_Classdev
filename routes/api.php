@@ -1,5 +1,6 @@
 <?php
 
+use GuzzleHttp\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,8 +28,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
     Route::group(['middleware' => 'auth:api'], function () {
         // Для всех
         Route::group(['namespace' => 'Course'], function () {
-            Route::get('/courses', 'CourseController@index');
-            Route::post('/courses', 'CourseController@store');
+            Route::post('/courses', 'CourseController@index');
+            Route::post('/courses/store', 'CourseController@store');
             Route::post('/connection', 'CourseController@connection');
             Route::post('/connection/{link}', 'CourseController@connection');
         });
@@ -45,6 +46,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::group(['namespace' => 'Notification'], function () {
             Route::post('/notifications', 'NotificationController@index');
             Route::post('/notifications/default', 'NotificationController@default');
+            Route::patch('/notifications/{notification}/read', 'NotificationController@read');
         });
 
         // --------------------------------------------------------------------------------------------
@@ -56,22 +58,23 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
                 Route::post('/courses/{course}/leave', 'CourseController@leave');
             });
 
-            Route::group(['namespace' => 'Decision'], function () {
+            Route::group(['namespace' => 'Decision', 'middleware' => 'forDecisionMembers'], function () {
             });
 
-            Route::group(['namespace' => 'File'], function () {
-                Route::get('/courses/{course}/tasks/{task}/files', 'FileController@index');
+            Route::group(['namespace' => 'File', 'middleware' => 'forFileMembers'], function () {
+                Route::get('/courses/{course}/tasks/{task}/files', 'TaskFileController@index');
+                Route::get('/courses/{course}/tasks/{task}/files/{file}', 'TaskFileController@show');
             });
 
             Route::group(['namespace' => 'Setting'], function () {
             });
 
-            Route::group(['namespace' => 'Folder'], function () {
+            Route::group(['namespace' => 'Folder', 'middleware' => 'forFolderMembers'], function () {
                 Route::get('/courses/{course}/tasks/{task}/folders/{folder}', 'FolderController@taskShow');
             });
 
-            Route::group(['namespace' => 'Task'], function () {
-                Route::post('/courses/{course}/tasks', 'TaskController@index');
+            Route::group(['namespace' => 'Task', 'middleware' => 'forTaskMembers'], function () {
+                Route::post('/courses/{course}/tasks', 'TaskController@index')->name('task.index');
                 Route::get('/courses/{course}/tasks/{task}', 'TaskController@show');
             });
         });
@@ -83,12 +86,12 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::group(['namespace' => 'Course'], function () {
             });
 
-            Route::group(['namespace' => 'Decision'], function () {
+            Route::group(['namespace' => 'Decision', 'middleware' => 'forDecisionMembers'], function () {
                 Route::patch('/courses/{course}/tasks/{task}/decisions/{decision}', 'DecisionController@update');
                 Route::delete('/courses/{course}/tasks/{task}/decisions/{decision}', 'DecisionController@destroy');
             });
 
-            Route::group(['namespace' => 'File'], function () {
+            Route::group(['namespace' => 'File', 'middleware' => 'forFileMembers'], function () {
                 Route::post('/courses/{course}/tasks/{task}/decisions/{decision}', 'DecisionFileController@store');
                 Route::delete('/courses/{course}/tasks/{task}/decisions/{decision}/files/{file}', 'DecisionFileController@destroy');
             });
@@ -96,7 +99,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::group(['namespace' => 'Setting'], function () {
             });
 
-            Route::group(['namespace' => 'Task'], function () {
+            Route::group(['namespace' => 'Task', 'middleware' => 'forTaskMembers'], function () {
             });
         });
 
@@ -107,21 +110,21 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::group(['namespace' => 'Course'], function () {
             });
 
-            Route::group(['namespace' => 'Decision'], function () {
+            Route::group(['namespace' => 'Decision', 'middleware' => 'forDecisionMembers'], function () {
                 Route::get('/courses/{course}/tasks/{task}/decisions/{decision}', 'DecisionController@show');
             });
 
-            Route::group(['namespace' => 'File'], function () {
+            Route::group(['namespace' => 'File', 'middleware' => 'forFileMembers'], function () {
             });
 
-            Route::group(['namespace' => 'Folder'], function () {
+            Route::group(['namespace' => 'Folder', 'middleware' => 'forFolderMembers'], function () {
                 Route::get('/courses/{course}/tasks/{task}/decisions/{decision}/folders/{folder}', 'DecisionFolderController@show');
             });
 
             Route::group(['namespace' => 'Setting'], function () {
             });
 
-            Route::group(['namespace' => 'Task'], function () {
+            Route::group(['namespace' => 'Task', 'middleware' => 'forTaskMembers'], function () {
             });
         });
 
@@ -132,17 +135,17 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::group(['namespace' => 'Course'], function () {
             });
 
-            Route::group(['namespace' => 'Decision'], function () {
+            Route::group(['namespace' => 'Decision', 'middleware' => 'forDecisionMembers'], function () {
                 Route::post('/courses/{course}/tasks/{task}/decisions', 'DecisionController@store');
             });
 
-            Route::group(['namespace' => 'File'], function () {
+            Route::group(['namespace' => 'File', 'middleware' => 'forFileMembers'], function () {
             });
 
             Route::group(['namespace' => 'Setting'], function () {
             });
 
-            Route::group(['namespace' => 'Task'], function () {
+            Route::group(['namespace' => 'Task', 'middleware' => 'forTaskMembers'], function () {
             });
         });
 
@@ -153,19 +156,20 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::group(['namespace' => 'Course'], function () {
                 Route::patch('/courses/{course}', 'CourseController@update');
                 Route::delete('/courses/{course}', 'CourseController@destroy');
+                Route::delete('/courses/{course}/users/{user}/expel', 'CourseController@expel');
             });
 
             Route::group(['namespace' => 'Invitation'], function () {
                 Route::post('/courses/{course}/invitations', 'InvitationController@store');
             });
 
-            Route::group(['namespace' => 'Decision'], function () {
+            Route::group(['namespace' => 'Decision', 'middleware' => 'forDecisionMembers'], function () {
                 Route::get('/courses/{course}/tasks/{task}/decisions', 'DecisionController@index');
             });
 
-            Route::group(['namespace' => 'File'], function () {
-                Route::get('/courses/{course}/tasks/{task}/files', 'TaskFileController@index');
-                Route::post('/courses/{course}/tasks/{task}/files', 'TaskFileController@store');
+            Route::group(['namespace' => 'File', 'middleware' => 'forFileMembers'], function () {
+                Route::get('/courses/{course}/tasks/{task}/files', 'TaskFileController@index')->name('file.index');
+                Route::post('/courses/{course}/tasks/{task}/files', 'TaskFileController@store')->name('file.store');
                 Route::delete('/courses/{course}/tasks/{task}/files/{file}', 'TaskFileController@destroy');
             });
 
@@ -173,10 +177,12 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
                 Route::post('/courses/{course}/settings/background', 'CourseSettingController@storeBackground');
                 Route::get('/courses/{course}/settings/invitations', 'CourseSettingController@getInvitations');
                 Route::delete('/courses/{course}/settings/background', 'CourseSettingController@DeleteBackground');
+                Route::patch('/courses/{course}/settings/code', 'CourseSettingController@changeCode');
+                Route::patch('/courses/{course}/settings/link', 'CourseSettingController@changeLink');
             });
 
-            Route::group(['namespace' => 'Task'], function () {
-                Route::post('/courses/{course}/tasks/store', 'TaskController@store');
+            Route::group(['namespace' => 'Task', 'middleware' => 'forTaskMembers'], function () {
+                Route::post('/courses/{course}/tasks/store', 'TaskController@store')->name('task.store');
                 Route::patch('/courses/{course}/tasks/{task}', 'TaskController@update');
                 Route::delete('/courses/{course}/tasks/{task}', 'TaskController@destroy');
             });

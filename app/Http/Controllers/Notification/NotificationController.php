@@ -18,15 +18,41 @@ class NotificationController extends Controller
         $notifications->loadMissing([
             'course',
             'task' => function (Builder $query) {
-                $query->with('folders');
+                $query->with([
+                    'folders',
+                    'files'
+                ]);
             },
             'decision',
+            'user',
         ]);
 
+        $haveUnread = Notification::where('recipient_id', auth()->user()->id)->where('isRead', 0)->count() > 0;
 
-
-        return NotificationResource::collection($notifications);
+        return response([
+            "data" => [
+                'notifications' => NotificationResource::collection($notifications),
+                'haveUnread' => $haveUnread,
+            ]
+        ]);
     }
+
+    public function read(Notification $notification)
+    {
+        $notification->update([
+            'isRead' => 1,
+        ]);
+
+        $haveUnread = Notification::where('recipient_id', auth()->user()->id)->where('isRead', 0)->count() > 0;
+
+        return response([
+            "data" => [
+                'notification' => new NotificationResource($notification),
+                'haveUnread' => $haveUnread,
+            ]
+        ]);
+    }
+
 
     public function index(IndexRequest $request)
     {
@@ -108,8 +134,12 @@ class NotificationController extends Controller
 
         $notifications->loadMissing([
             'course',
-            'task',
-            'decision'
+            'task' => function (Builder $query) {
+                $query->with('folders');
+            },
+            'decision',
+            'user',
+            'decision',
         ]);
 
 

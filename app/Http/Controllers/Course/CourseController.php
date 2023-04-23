@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Course;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Course\ConnectionRequest;
+use App\Http\Requests\Course\IndexRequest;
 use App\Http\Requests\Course\InvitationRequest;
 use App\Http\Requests\Course\StoreImageRequest;
 use App\Http\Requests\Course\StoreRequest;
@@ -12,17 +13,29 @@ use App\Http\Resources\Course\CourseResource;
 use App\Models\Course;
 use App\Models\CourseInformation;
 use App\Models\CourseUser;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Faker\Factory as Faker;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
 {
-    public function index(Request $request)
+    public function index(IndexRequest $request)
     {
+        $credentials = $request->validated();
+
+        if (isset($credentials['search'])) {
+            $courses = Course::whereHas('members', function (Builder $query) {
+                $query->where('user_id', auth()->user()->id);
+            })->where('title', 'LIKE', "%{$credentials['search']}%")->get();
+
+            return CourseResource::collection($courses);
+        }
+
         return CourseResource::collection(auth()->user()->courses);
     }
 
@@ -58,7 +71,7 @@ class CourseController extends Controller
                 'image_path' => '/storage/backgrounds/' . $background . '.png',
                 'image_name' => $background . '.png',
                 'image_extension' => 'png',
-                'code' => $code,
+                'code' => strtoupper($code),
                 'link' => $link
             ]);
 
@@ -75,27 +88,19 @@ class CourseController extends Controller
 
     public function show(Course $course)
     {
-
         $course->loadMissing([
             'information',
+            'members',
         ]);
-
         return new CourseResource($course);
     }
 
     public function update(UpdateRequest $request, Course $course)
     {
         $credentials = $request->validated();
+        $course->update($credentials);
 
-        //Change title and description
-        if (Arr::exists($credentials, 'title')) {
-            $course->update([
-                'title' => $credentials['title'],
-                'description' => $credentials['description'],
-            ]);
-
-            return new CourseResource($course->loadMissing('information'));
-        }
+        return new CourseResource($course);
     }
 
     public function destroy(Course $course)
@@ -142,5 +147,16 @@ class CourseController extends Controller
         }
 
         return response(['success_message' => 'Вы успешно покинули курс']);
+    }
+
+    public function expel(Course $course, User $user)
+    {
+        $member = CourseUser::where('user_id', $user->id)->where('course_id', $course->id)->first();
+
+        if ($member) {
+            $member->delete();
+        }
+
+        return response(['success_message' => 'Вы успешно выгнали участника']);
     }
 }

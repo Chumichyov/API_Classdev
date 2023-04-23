@@ -15,6 +15,7 @@ class FileResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id' => $this->id,
             'task' => new TaskResource($this->whenLoaded('task')),
             'decision' => new DecisionResource($this->whenLoaded('decision')),
             'user' => new UserResource($this->whenLoaded('user')),

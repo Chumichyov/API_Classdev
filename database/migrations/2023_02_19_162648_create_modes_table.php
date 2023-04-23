@@ -28,9 +28,9 @@ return new class extends Migration
             ['title' => 'css'],
             ['title' => 'text'],
             ['title' => 'sql'],
-            ['title' => 'c_cpp'],
+            ['title' => 'c'],
             ['title' => 'python'],
-            ['title' => 'golang'],
+            ['title' => 'go'],
             ['title' => 'json'],
             ['title' => 'java'],
             ['title' => 'kotlin'],
@@ -38,6 +38,7 @@ return new class extends Migration
             ['title' => 'rust'],
             ['title' => 'ruby'],
             ['title' => 'swift'],
+            ['title' => 'cpp'],
         ]);
     }
 

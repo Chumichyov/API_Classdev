@@ -4,7 +4,11 @@ namespace App\Http;
 
 use App\Http\Middleware\CreatorDecision;
 use App\Http\Middleware\CreatorDecisionAndLeader;
+use App\Http\Middleware\ForDecisionMembers;
+use App\Http\Middleware\ForFileMembers;
+use App\Http\Middleware\ForFolderMembers;
 use App\Http\Middleware\ForMembers;
+use App\Http\Middleware\ForTaskMembers;
 use App\Http\Middleware\OnlyLeader;
 use App\Http\Middleware\OnlyMember;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -47,6 +51,10 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $routeMiddleware = [
+        'forFolderMembers' => ForFolderMembers::class,
+        'forTaskMembers' => ForTaskMembers::class,
+        'forDecisionMembers' => ForDecisionMembers::class,
+        'forFileMembers' => ForFileMembers::class,
         'forMembers' => ForMembers::class,
         'onlyMember' => OnlyMember::class,
         'onlyLeader' => OnlyLeader::class,

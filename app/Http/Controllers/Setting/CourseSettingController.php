@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Setting;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Setting\StoreImageRequest;
+use App\Http\Resources\Course\CourseInformationResource;
 use App\Http\Resources\Course\CourseResource;
 use App\Http\Resources\Invitation\InvitationResource;
 use App\Models\Course;
@@ -64,5 +65,44 @@ class CourseSettingController extends Controller
     public function getInvitations(Course $course)
     {
         return InvitationResource::collection(Invitation::where('course_id', $course->id)->get());
+    }
+
+    public function changeCode(Course $course)
+    {
+        $code = $course->information->code;
+        $faker = Faker::create();
+
+        do {
+            $newCode = strtoupper($faker->bothify('??#?#?'));
+        } while (CourseInformation::where('code', $newCode)->first() !== null);
+
+        $course->information->update([
+            'code' => $newCode,
+        ]);
+        return response([
+            "data" => [
+                'code' =>  $course->information->code,
+            ]
+        ]);
+    }
+
+    public function changeLink(Course $course)
+    {
+        $link = $course->information->link;
+        $faker = Faker::create();
+
+        do {
+            $newLink = $faker->bothify('?????##???###?????##');
+        } while (CourseInformation::where('link', $newLink)->first() !== null);
+
+        $course->information->update([
+            'link' => $newLink,
+        ]);
+
+        return response([
+            "data" => [
+                'link' =>  $course->information->link,
+            ]
+        ]);
     }
 }

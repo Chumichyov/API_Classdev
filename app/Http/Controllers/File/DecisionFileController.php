@@ -34,10 +34,25 @@ class DecisionFileController extends Controller
 
                 if ($extension == 'zip') {
                     $path = 'courses/course_' . $course->id . '/task_' . $task->id . '/user_' . auth()->user()->id . '/' . $originalName;
+
+                    if (Folder::where('task_id', $task->id)->where('folder_id', null)->count() != 0) {
+                        $main = Folder::where('task_id', $task->id)->where('folder_id', null)->first();
+                    } else {
+                        $main = Folder::create([
+                            'task_id' => $task->id,
+                            'decision_id' => $decision->id,
+                            'folder_id' => null,
+                            'original_name' => 'user_' . auth()->user()->id,
+                            'folder_path' => '/storage/' . 'courses/course_' . $course->id . '/task_' . $task->id . '/files'
+                        ]);
+                    }
+
                     Folder::create([
+                        'task_id' => $task->id,
                         'decision_id' => $decision->id,
-                        'folder_id' => null,
-                        'folder_path' => '/storage/' . 'public/' . $path
+                        'folder_id' => $main->id,
+                        'original_name' => $originalName,
+                        'folder_path' => '/storage/' . $path
                     ]);
 
                     $zip = new ZipArchive();
@@ -49,26 +64,32 @@ class DecisionFileController extends Controller
 
                     $zip->extractTo(Storage::path('public/' . $path));
 
+                    mb_internal_encoding("UTF-8");
+
                     foreach (Storage::allDirectories('public/' . $path) as $zipFolder) {
-                        Folder::create([
+                        $fold = Folder::create([
+                            'task_id' => $task->id,
                             'decision_id' => $decision->id,
-                            'folder_id' => Folder::where('folder_path', '/storage/' . pathinfo($zipFolder, PATHINFO_DIRNAME))->first()->id,
-                            'folder_path' => '/storage/' . $zipFolder
+                            'folder_id' => Folder::where('folder_path', '/storage/' . pathinfo(mb_substr($zipFolder, 7), PATHINFO_DIRNAME))->first()->id,
+                            'original_name' => pathinfo($zipFolder, PATHINFO_BASENAME),
+                            'folder_path' => '/storage/' . mb_substr($zipFolder, 7)
                         ]);
                     }
+
 
                     foreach (Storage::allFiles('public/' . $path) as $zipFile) {
                         $fileName = md5(microtime()) . '.' . pathinfo($zipFile, PATHINFO_EXTENSION);
                         Storage::move($zipFile, pathinfo($zipFile, PATHINFO_DIRNAME) . '/' . $fileName);
 
                         File::create([
+                            'task_id' => $task->id,
                             'decision_id' => $decision->id,
                             'user_id' => auth()->user()->id,
-                            'folder_id' => Folder::where('folder_path', '/storage/' . pathinfo($zipFile, PATHINFO_DIRNAME))->first()->id,
-                            'file_extension_id' => !is_null(FileExtension::where('extension', pathinfo($zipFile, PATHINFO_EXTENSION))->first()) ? FileExtension::where('extension', pathinfo($zipFile, PATHINFO_EXTENSION))->first()->id : null,
-                            'original_name' => pathinfo($zipFile, PATHINFO_FILENAME),
+                            'folder_id' => Folder::where('folder_path', '/storage/' . pathinfo(mb_substr($zipFile, 7), PATHINFO_DIRNAME))->first()->id,
+                            'file_extension_id' => !is_null(FileExtension::where('extension', pathinfo(mb_substr($zipFile, 7), PATHINFO_EXTENSION))->first()) ? FileExtension::where('extension', pathinfo($zipFile, PATHINFO_EXTENSION))->first()->id : null,
+                            'original_name' => pathinfo(mb_substr($zipFile, 7), PATHINFO_BASENAME),
                             'file_name' => $fileName,
-                            'file_path' => '/storage/' . pathinfo($zipFile, PATHINFO_DIRNAME) . '/' . $fileName,
+                            'file_path' => '/storage/' . pathinfo(mb_substr($zipFile, 7), PATHINFO_DIRNAME) . '/' . $fileName,
                         ]);
                     }
 
@@ -76,16 +97,30 @@ class DecisionFileController extends Controller
                 } else {
                     $path = 'courses/course_' . $course->id . '/task_' . $task->id . '/user_' . auth()->user()->id;
 
+                    if (Folder::where('task_id', $task->id)->where('folder_id', null)->count() != 0) {
+                        $main = Folder::where('task_id', $task->id)->where('folder_id', null)->first();
+                    } else {
+                        $main = Folder::create([
+                            'task_id' => $task->id,
+                            'decision_id' => $decision->id,
+                            'folder_id' => null,
+                            'original_name' => 'user_' . auth()->user()->id,
+                            'folder_path' => '/storage/' . 'courses/course_' . $course->id . '/task_' . $task->id . '/files'
+                        ]);
+                    }
+
                     $fileName = md5(microtime()) . '.' . $extension;
                     $sendedFile = $file->storeAs('public/' . $path, $fileName);
 
                     File::create([
+                        'task_id' => $task->id,
                         'decision_id' => $decision->id,
+                        'folder_id' => $main->id,
                         'user_id' => auth()->user()->id,
                         'file_extension_id' => !is_null(FileExtension::where('extension', $extension)->first()) ? FileExtension::where('extension', $extension)->first()->id : null,
                         'original_name' => $file->getClientOriginalName(),
                         'file_name' => $fileName,
-                        'file_path' => '/storage/' . pathinfo($sendedFile, PATHINFO_DIRNAME) . '/' . $fileName,
+                        'file_path' => '/storage/' . pathinfo(mb_substr($sendedFile, 7), PATHINFO_DIRNAME) . '/' . $fileName,
                     ]);
                 }
             }
@@ -96,9 +131,32 @@ class DecisionFileController extends Controller
         }
     }
 
-    public function show(File $File)
+    public function show(Course $course, Task $task, Decision $decision, File $file)
     {
-        //
+        $imageExtensions = ['jpg', 'jpeg', 'gif', 'png', 'bmp', 'svg', 'svgz', 'cgm', 'djv', 'djvu', 'ico', 'ief', 'jpe', 'pbm', 'pgm', 'pnm', 'ppm', 'ras', 'rgb', 'tif', 'tiff', 'wbmp', 'xbm', 'xpm', 'xwd'];
+
+        $extension = pathinfo($file->original_name, PATHINFO_EXTENSION);
+
+        if (in_array($extension, $imageExtensions)) {
+            //Image
+            return response()->file(public_path($file->file_path));
+        }
+
+        // File with code
+        $content = fopen(public_path($file->file_path), 'r');
+
+        while (!feof($content)) {
+            $lines[] = str_replace(PHP_EOL, '', fgets($content));
+        }
+
+        fclose($content);
+
+        return response([
+            "data" => [
+                'file' => new FileResource($file),
+                'lines' => $lines
+            ]
+        ]);
     }
 
     public function update(Request $request, File $File)

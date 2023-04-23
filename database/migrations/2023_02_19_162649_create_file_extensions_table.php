@@ -34,7 +34,7 @@ return new class extends Migration
             ['extension' => 'css', 'mode_id' => '5'],
             ['extension' => 'txt', 'mode_id' => '6'],
             ['extension' => 'sql', 'mode_id' => '7'],
-            ['extension' => 'cpp', 'mode_id' => '8'],
+            ['extension' => 'cpp', 'mode_id' => '18'],
             ['extension' => 'c', 'mode_id' => '8'],
             ['extension' => 'py', 'mode_id' => '9'],
             ['extension' => 'go', 'mode_id' => '10'],

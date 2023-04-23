@@ -24,6 +24,7 @@ class CourseResource extends JsonResource
             'description' => $this->description,
             'group' => $this->group,
             'tasks' => TaskResource::collection($this->whenLoaded('tasks')),
+            'members' => UserResource::collection($this->whenLoaded('members')),
             'leader' => new UserResource(User::find($this->leader_id)),
             'leader_id' => $this->leader_id,
             'information' => new CourseInformationResource($this->whenLoaded('information')),

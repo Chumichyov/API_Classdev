@@ -27,6 +27,7 @@ class NotificationResource extends JsonResource
             'course' => new CourseResource($this->whenLoaded('course')),
             'task' => new TaskResource($this->whenLoaded('task')),
             'decision' => new DecisionResource($this->whenLoaded('decision')),
+            'user' => new UserResource($this->whenLoaded('user')),
             'message' => $this->message,
             'isRead' => $this->isRead,
             'created_at' => $this->created_at,

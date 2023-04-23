@@ -19,6 +19,22 @@ class TaskController extends Controller
     {
         $credentials = $request->validated();
 
+        //Search
+        if ($credentials['search'] != "") {
+            $tasks = Task::where('course_id', $course->id)->where('title', 'LIKE', "%{$credentials['search']}%")->orderBy('created_at', 'desc')->get();
+            $tasks->loadMissing([
+                'type',
+                'folders' => function (Builder $query) {
+                    $query->where('folder_id', null);
+                },
+            ]);
+
+            return response([
+                "data" => [
+                    'tasks' => TaskResource::collection($tasks),
+                ]
+            ]);
+        }
 
         //Dates sort
         if ($credentials['type'] == "Date") {
@@ -65,8 +81,10 @@ class TaskController extends Controller
         $task = Task::create([
             'title' => $credentials['title'],
             'description' => isset($credentials['description']) ? $credentials['description'] : '',
-            'course_id' => $course->id
+            'course_id' => $course->id,
+            'type_id' => $credentials['type']
         ]);
+
         foreach ($course->members->where("id", "!=", $course->leader_id) as $member) {
             $task->notifications()->create([
                 'type_id' => 3,
@@ -74,9 +92,17 @@ class TaskController extends Controller
                 'recipient_id' => $member->id,
                 'decision_id' => null,
                 'course_id' => $course->id,
-                'message' => "В курсе '{$course->title}' выложено новое задание: '{$task->title}'",
+                'message' =>  $credentials['type'] == 1 ? "В курсе '{$course->title}' выложено новое задание: '{$task->title}'" : "В курсе '{$course->title}' выложен новый материал: '{$task->title}'",
             ]);
         };
+
+        $task->loadMissing([
+            'type',
+            'folders' => function (Builder $query) {
+                $query->where('folder_id', null);
+            },
+        ]);
+
         return new TaskResource($task);
     }
 
@@ -90,9 +116,10 @@ class TaskController extends Controller
             'folders' => function (Builder $query) {
                 $query->where('folder_id', null);
             },
+            'type',
         ]);
 
-        return new TaskResource($task->loadMissing('files'));
+        return new TaskResource($task);
     }
 
     public function update(UpdateRequest $request, Course $course, Task $task)
