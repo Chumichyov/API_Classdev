@@ -26,6 +26,6 @@ class OnlyLeader
             return $next($request);
         }
 
-        return response()->json(['error_message' => 'Forbidden'], 403);
+        return response()->json(['error_message' => 'Запрещено'], 403);
     }
 }

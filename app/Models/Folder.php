@@ -9,7 +9,7 @@ class Folder extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['decision_id', 'task_id', 'original_name', 'folder_id', 'is_main', 'folder_path'];
+    protected $fillable = ['decision_id', 'task_id', 'user_id', 'original_name', 'folder_id', 'folder_path'];
 
     public function decision()
     {
@@ -19,6 +19,11 @@ class Folder extends Model
     public function task()
     {
         return $this->belongsTo(Task::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function files()

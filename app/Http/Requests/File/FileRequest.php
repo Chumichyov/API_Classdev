@@ -26,6 +26,7 @@ class FileRequest extends FormRequest
         return [
             'files' => ['required'],
             'files.*' => ['required'],
+            'folder' => ['nullable'],
         ];
     }
 }

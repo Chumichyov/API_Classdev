@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Task;
 
 use App\Http\Resources\Course\CourseResource;
+use App\Http\Resources\Decision\DecisionResource;
 use App\Http\Resources\File\FileResource;
 use App\Http\Resources\Folder\FolderResource;
 use App\Models\Course;
@@ -22,7 +23,6 @@ class TaskResource extends JsonResource
     {
         $task = Task::find($this->id);
         $course = Course::find($this->course_id);
-
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -30,8 +30,10 @@ class TaskResource extends JsonResource
             'course' => new CourseResource($this->whenLoaded('course')),
             'files' => FileResource::collection($this->whenLoaded('files')),
             'folders' => FolderResource::collection($this->whenLoaded('folders')),
+            'decision' => DecisionResource::collection($this->whenLoaded('decisions')),
             'type' => new TaskTypeResource($this->whenLoaded('type')),
-            'is_completed' => $task->decisions->where('user_id', auth()->user()->id)->first() != null || $task->type->id == 2 || $course->leader_id == auth()->user()->id,
+            'is_published' => $this->is_published,
+            'is_completed' => !is_null($task->decisions->where('user_id', auth()->user()->id)->first()) ? $task->decisions->where('user_id', auth()->user()->id)->first()->completed_id : null,
             'created_at' => $this->created_at->format('d-m-Y')
         ];
     }

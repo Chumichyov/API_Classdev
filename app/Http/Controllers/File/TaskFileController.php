@@ -25,27 +25,55 @@ class TaskFileController extends Controller
     public function store(FileRequest $request, Course $course, Task $task)
     {
         try {
-            $credentials = $request->validated();
+            $credentials = $request;
+
+            $haveFolder = isset($credentials['folder']) && !is_null(Folder::find($credentials['folder']));
+
+            if ($haveFolder)
+                $loadedFolder = Folder::find($credentials['folder']);
+
             foreach ($credentials['files'] as $file) {
                 $extension = $file->getClientOriginalExtension();
                 $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                 if ($extension == 'zip') {
-                    $path = 'courses/course_' . $course->id . '/task_' . $task->id . '/files' . '/' . $originalName;
-
-                    if (Folder::where('task_id', $task->id)->where('folder_id', null)->count() != 0) {
-                        $main = Folder::where('task_id', $task->id)->where('folder_id', null)->first();
+                    if ($haveFolder) {
+                        //Some folder
+                        $sm_path = mb_substr($loadedFolder->folder_path, 9);
+                        $path = mb_substr($loadedFolder->folder_path, 9) . '/' . $originalName;
                     } else {
-                        $main = Folder::create([
-                            'task_id' => $task->id,
-                            'folder_id' => null,
-                            'original_name' => 'files',
-                            'folder_path' => '/storage/' . 'courses/course_' . $course->id . '/task_' . $task->id . '/files'
-                        ]);
+                        //Main folder
+                        $sm_path = 'courses/course_' . $course->id . '/task_' . $task->id . '/files';
+                        $path = 'courses/course_' . $course->id . '/task_' . $task->id . '/files' . '/' . $originalName;
+                        if (Folder::where('task_id', $task->id)->where('folder_id', null)->where('user_id', auth()->user()->id)->count() != 0) {
+                            $main = Folder::where('task_id', $task->id)->where('folder_id', null)->where('user_id', auth()->user()->id)->first();
+                        } else {
+                            $main = Folder::create([
+                                'task_id' => $task->id,
+                                'user_id' => auth()->user()->id,
+                                'folder_id' => null,
+                                'original_name' => 'files',
+                                'folder_path' => '/storage/' . 'courses/course_' . $course->id . '/task_' . $task->id . '/files'
+                            ]);
+                        }
+                    }
+
+
+                    if (Storage::disk('public')->exists($path)) {
+                        $i = 1;
+                        $newName = $originalName;
+
+                        do {
+                            $originalName = $newName . '_' . $i;
+                            $i++;
+                        } while (Folder::where('task_id', $task->id)->where('folder_id', $haveFolder ? $loadedFolder->id : $main->id)->where('original_name', $originalName)->count() != 0);
+
+                        $path = $sm_path . '/' . $originalName;
                     }
 
                     Folder::create([
                         'task_id' => $task->id,
-                        'folder_id' => $main->id,
+                        'user_id' => auth()->user()->id,
+                        'folder_id' => $haveFolder ? $loadedFolder->id : $main->id,
                         'original_name' => $originalName,
                         'folder_path' => '/storage/' . $path
                     ]);
@@ -64,6 +92,7 @@ class TaskFileController extends Controller
                     foreach (Storage::allDirectories('public/' . $path) as $zipFolder) {
                         $fold = Folder::create([
                             'task_id' => $task->id,
+                            'user_id' => auth()->user()->id,
                             'folder_id' => Folder::where('folder_path', '/storage/' . pathinfo(mb_substr($zipFolder, 7), PATHINFO_DIRNAME))->first()->id,
                             'original_name' => pathinfo($zipFolder, PATHINFO_BASENAME),
                             'folder_path' => '/storage/' . mb_substr($zipFolder, 7)
@@ -88,17 +117,23 @@ class TaskFileController extends Controller
 
                     $zip->close();
                 } else {
-                    $path = 'courses/course_' . $course->id . '/task_' . $task->id . '/files';
+                    if ($haveFolder)
+                        //Some folder
+                        $path = mb_substr($loadedFolder->folder_path, 9);
+                    else {
+                        $path = 'courses/course_' . $course->id . '/task_' . $task->id . '/files';
 
-                    if (Folder::where('task_id', $task->id)->where('folder_id', null)->count() != 0) {
-                        $main = Folder::where('task_id', $task->id)->where('folder_id', null)->first();
-                    } else {
-                        $main = Folder::create([
-                            'task_id' => $task->id,
-                            'folder_id' => null,
-                            'original_name' => 'files',
-                            'folder_path' => '/storage/' . 'courses/course_' . $course->id . '/task_' . $task->id . '/files'
-                        ]);
+                        if (Folder::where('task_id', $task->id)->where('folder_id', null)->count() != 0) {
+                            $main = Folder::where('task_id', $task->id)->where('folder_id', null)->first();
+                        } else {
+                            $main = Folder::create([
+                                'task_id' => $task->id,
+                                'user_id' => auth()->user()->id,
+                                'folder_id' => null,
+                                'original_name' => 'files',
+                                'folder_path' => '/storage/' . 'courses/course_' . $course->id . '/task_' . $task->id . '/files'
+                            ]);
+                        }
                     }
 
                     $fileName = md5(microtime()) . '.' . $extension;
@@ -106,7 +141,7 @@ class TaskFileController extends Controller
 
                     File::create([
                         'task_id' => $task->id,
-                        'folder_id' => $main->id,
+                        'folder_id' => $haveFolder ? $loadedFolder->id : $main->id,
                         'user_id' => auth()->user()->id,
                         'file_extension_id' => !is_null(FileExtension::where('extension', $extension)->first()) ? FileExtension::where('extension', $extension)->first()->id : null,
                         'original_name' => $file->getClientOriginalName(),
@@ -137,7 +172,7 @@ class TaskFileController extends Controller
         $content = fopen(public_path($file->file_path), 'r');
 
         while (!feof($content)) {
-            $lines[] = str_replace(PHP_EOL, '', fgets($content));
+            $lines[] =  iconv("windows-1251", "utf-8//IGNORE", str_replace(PHP_EOL, '', fgets($content)));
         }
 
         fclose($content);
@@ -158,7 +193,7 @@ class TaskFileController extends Controller
     public function destroy(Course $course, Task $task, File $file)
     {
         try {
-            $path = substr($file->file_path, 16);
+            $path = substr($file->file_path, 9);
             if (Storage::disk('public')->exists($path) && $file->user_id == auth()->user()->id) {
 
                 Storage::disk('public')->delete($path);

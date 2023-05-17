@@ -22,7 +22,7 @@ class UserResource extends JsonResource
             'surname' => $this->surname,
             'email' => $this->email,
             'information' => new UserInformationResource(UserInformation::find($this->id)),
-            'role_id' => new RoleResource(Role::find($this->role_id)),
+            'role' => new RoleResource(Role::find($this->role_id)),
         ];
     }
 }

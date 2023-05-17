@@ -25,12 +25,12 @@ class ForTaskMembers
         gettype($task) == 'string' ? $task = Task::findOrFail($task) : '';
         gettype($course) == 'string' ? $course = Course::findOrFail($course) : '';
 
-        if ((Route::currentRouteName() == 'task.index' || Route::currentRouteName() == 'task.store') && $course->members->where('id', auth()->user()->id)->first()) {
+        if ((Route::currentRouteName() == 'task.index' || Route::currentRouteName() == 'task.store' || Route::currentRouteName() == 'task.billet') && $course->members->where('id', auth()->user()->id)->first()) {
             return $next($request);
         } else if (!is_null($task->course->members->where('id', auth()->user()->id)->first())) {
             return $next($request);
         }
 
-        return response()->json(['error_message' => 'Forbidden'], 403);
+        return response()->json(['error_message' => 'Запрещено'], 403);
     }
 }

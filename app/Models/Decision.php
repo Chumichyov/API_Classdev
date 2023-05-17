@@ -9,11 +9,16 @@ class Decision extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'task_id', 'description', 'grade_id'];
+    protected $fillable = ['user_id', 'task_id', 'description', 'grade_id', 'completed_id'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function completed()
+    {
+        return $this->belongsTo(DecisionCompleted::class);
     }
 
     public function task()
@@ -28,12 +33,12 @@ class Decision extends Model
 
     public function files()
     {
-        return $this->hasMany(DecisionFile::class);
+        return $this->hasMany(File::class);
     }
 
     public function folders()
     {
-        return $this->hasMany(DecisionFolder::class);
+        return $this->hasMany(Folder::class);
     }
 
     public function notifications()

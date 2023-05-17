@@ -32,10 +32,10 @@ return new class extends Migration
             $table->index('folder_id', 'file_folder_idx');
             $table->index('file_extension_id', 'file_file_extension_idx');
 
-            $table->foreign('task_id', 'file_task_fk')->on('tasks')->references('id');
-            $table->foreign('decision_id', 'file_decision_fk')->on('decisions')->references('id');
-            $table->foreign('user_id', 'file_user_fk')->on('users')->references('id');
-            $table->foreign('folder_id', 'file_folder_fk')->on('folders')->references('id');
+            $table->foreign('task_id', 'file_task_fk')->on('tasks')->references('id')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('decision_id', 'file_decision_fk')->on('decisions')->references('id')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id', 'file_user_fk')->on('users')->references('id')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('folder_id', 'file_folder_fk')->on('folders')->references('id')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('file_extension_id', 'file_file_extension_fk')->on('file_extensions')->references('id');
         });
     }

@@ -25,7 +25,7 @@ class IndexRequest extends FormRequest
     {
         return [
             "type" => [''],
-            "search" => ['']
+            "search" => ['nullable']
         ];
     }
 }
