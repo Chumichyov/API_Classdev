@@ -120,6 +120,10 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
                 Route::get('/courses/{course}/tasks/{task}/authDecision', 'DecisionController@authShow')->name('decision.authShow');
             });
 
+            Route::group(['namespace' => 'Review', 'middleware' => 'forReviewMembers'], function () {
+                Route::get('/courses/{course}/tasks/{task}/decisions/{decision}/files/{file}/reviews', 'ReviewController@index');
+            });
+
             Route::group(['namespace' => 'File', 'middleware' => 'forFileMembers'], function () {
                 Route::get('/courses/{course}/tasks/{task}/decisions/{decision}/files/{file}', 'DecisionFileController@show');
             });
@@ -168,6 +172,10 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
 
             Route::group(['namespace' => 'Invitation'], function () {
                 Route::post('/courses/{course}/invitations', 'InvitationController@store');
+            });
+
+            Route::group(['namespace' => 'Review'], function () {
+                Route::post('/courses/{course}/tasks/{task}/decisions/{decision}/files/{file}/reviews', 'ReviewController@store');
             });
 
             Route::group(['namespace' => 'Decision', 'middleware' => 'forDecisionMembers'], function () {

@@ -58,6 +58,11 @@ class User extends Authenticatable
         return $this->hasMany(Decision::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'creator_id');
+    }
+
     public function invitations()
     {
         return $this->hasMany(Invitation::class);

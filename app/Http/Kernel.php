@@ -8,6 +8,7 @@ use App\Http\Middleware\ForDecisionMembers;
 use App\Http\Middleware\ForFileMembers;
 use App\Http\Middleware\ForFolderMembers;
 use App\Http\Middleware\ForMembers;
+use App\Http\Middleware\ForReviewMembers;
 use App\Http\Middleware\ForTaskMembers;
 use App\Http\Middleware\OnlyLeader;
 use App\Http\Middleware\OnlyMember;
@@ -55,6 +56,7 @@ class Kernel extends HttpKernel
         'forTaskMembers' => ForTaskMembers::class,
         'forDecisionMembers' => ForDecisionMembers::class,
         'forFileMembers' => ForFileMembers::class,
+        'forReviewMembers' => ForReviewMembers::class,
         'forMembers' => ForMembers::class,
         'onlyMember' => OnlyMember::class,
         'onlyLeader' => OnlyLeader::class,
