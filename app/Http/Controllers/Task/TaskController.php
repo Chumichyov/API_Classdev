@@ -48,8 +48,10 @@ class TaskController extends Controller
         // if ($credentials['type'] == "Date") {
         if (auth()->user()->id == $course->leader_id) {
             $tasks = Task::where('course_id', $course->id)->orderBy('created_at', 'desc')->get();
+            $onlyTasks = Task::where('course_id', $course->id)->where('type_id', 1)->orderBy('created_at', 'desc')->get();
         } else {
             $tasks = Task::where('course_id', $course->id)->where('is_published', 1)->orderBy('created_at', 'desc')->get();
+            $onlyTasks = Task::where('course_id', $course->id)->where('is_published', 1)->where('type_id', 1)->orderBy('created_at', 'desc')->get();
         }
 
         $tasks->loadMissing([
@@ -71,6 +73,7 @@ class TaskController extends Controller
         return response([
             "data" => [
                 'tasks' => TaskResource::collection($tasks),
+                'onlyTasks' => TaskResource::collection($onlyTasks),
                 'dates' => $dates
             ]
         ]);

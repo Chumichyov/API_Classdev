@@ -62,14 +62,14 @@ class NotificationController extends Controller
 
             if (isset($credentials['search'])) {
                 if ($credentials['all'] == "false") {
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('message', 'LIKE', "%{$credentials['search']}%")->where('isRead', 0)->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('message', 'LIKE', "%{$credentials['search']}%")->where('isRead', 0)->paginate(15, ['*'], 'page', $credentials['page']);
                 } else
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('message', 'LIKE', "%{$credentials['search']}%")->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('message', 'LIKE', "%{$credentials['search']}%")->paginate(15, ['*'], 'page', $credentials['page']);
             } else {
                 if ($credentials['all'] == "false") {
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('isRead', 0)->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('isRead', 0)->paginate(15, ['*'], 'page', $credentials['page']);
                 } else {
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->paginate(15, ['*'], 'page', $credentials['page']);
                 }
             }
         } else if ($credentials['type'] == 'Course') {
@@ -77,42 +77,42 @@ class NotificationController extends Controller
 
             if (isset($credentials['search'])) {
                 if ($credentials['all'] == "false") {
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('message', 'LIKE', "%{$credentials['search']}%")->where('isRead', 0)->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('message', 'LIKE', "%{$credentials['search']}%")->where('isRead', 0)->paginate(15, ['*'], 'page', $credentials['page']);
                 } else
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('message', 'LIKE', "%{$credentials['search']}%")->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('message', 'LIKE', "%{$credentials['search']}%")->paginate(15, ['*'], 'page', $credentials['page']);
             } else {
                 if ($credentials['all'] == "false") {
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('isRead', 0)->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('isRead', 0)->paginate(15, ['*'], 'page', $credentials['page']);
                 } else
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->paginate(15, ['*'], 'page', $credentials['page']);
             }
         } else if ($credentials['type'] == 'Task') {
             //Task
 
             if (isset($credentials['search'])) {
                 if ($credentials['all'] == "false") {
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '=', null)->where('message', 'LIKE', "%{$credentials['search']}%")->where('isRead', 0)->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '=', null)->where('message', 'LIKE', "%{$credentials['search']}%")->where('isRead', 0)->paginate(15, ['*'], 'page', $credentials['page']);
                 } else
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '=', null)->where('message', 'LIKE', "%{$credentials['search']}%")->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '=', null)->where('message', 'LIKE', "%{$credentials['search']}%")->paginate(15, ['*'], 'page', $credentials['page']);
             } else {
                 if ($credentials['all'] == "false") {
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '=', null)->where('isRead', 0)->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '=', null)->where('isRead', 0)->paginate(15, ['*'], 'page', $credentials['page']);
                 } else
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '=', null)->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '=', null)->paginate(15, ['*'], 'page', $credentials['page']);
             }
         } else if ($credentials['type'] == 'Decision') {
             //Decision
 
             if (isset($credentials['search'])) {
                 if ($credentials['all'] == "false") {
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '!=', null)->where('message', 'LIKE', "%{$credentials['search']}%")->where('isRead', 0)->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '!=', null)->where('message', 'LIKE', "%{$credentials['search']}%")->where('isRead', 0)->paginate(15, ['*'], 'page', $credentials['page']);
                 } else
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '!=', null)->where('message', 'LIKE', "%{$credentials['search']}%")->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '!=', null)->where('message', 'LIKE', "%{$credentials['search']}%")->paginate(15, ['*'], 'page', $credentials['page']);
             } else {
                 if ($credentials['all'] == "false") {
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '!=', null)->where('isRead', 0)->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '!=', null)->where('isRead', 0)->paginate(15, ['*'], 'page', $credentials['page']);
                 } else
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '!=', null)->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('course_id', '!=', null)->where('task_id', '!=', null)->where('decision_id', '!=', null)->paginate(15, ['*'], 'page', $credentials['page']);
             }
         } else if ($credentials['type'] == 'Messenger') {
             //Messenger
@@ -121,14 +121,14 @@ class NotificationController extends Controller
         } else {
             if (isset($credentials['search'])) {
                 if ($credentials['all'] == "false") {
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('message', 'LIKE', "%{$credentials['search']}%")->where('isRead', 0)->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('message', 'LIKE', "%{$credentials['search']}%")->where('isRead', 0)->paginate(15, ['*'], 'page', $credentials['page']);
                 } else
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('message', 'LIKE', "%{$credentials['search']}%")->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('message', 'LIKE', "%{$credentials['search']}%")->paginate(15, ['*'], 'page', $credentials['page']);
             } else {
                 if ($credentials['all'] == "false") {
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('isRead', 0)->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->where('isRead', 0)->paginate(15, ['*'], 'page', $credentials['page']);
                 } else
-                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->paginate(10, ['*'], 'page', $credentials['page']);
+                    $notifications = Notification::orderBy('created_at', 'desc')->where('recipient_id', auth()->user()->id)->paginate(15, ['*'], 'page', $credentials['page']);
             }
         }
 

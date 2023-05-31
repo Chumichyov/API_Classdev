@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('task_id');
             $table->text('description')->nullable();
-            $table->unsignedBigInteger('grade_id')->nullable();
+            $table->string('grade')->nullable();
             $table->unsignedBigInteger('completed_id')->default(1);
             $table->timestamps();
 
@@ -27,12 +27,10 @@ return new class extends Migration
 
             $table->index('user_id', 'decision_user_idx');
             $table->index('task_id', 'decision_task_idx');
-            $table->index('grade_id', 'decision_grade_idx');
             $table->index('completed_id', 'decision_completed_idx');
 
             $table->foreign('user_id', 'decision_user_fk')->on('users')->references('id')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('task_id', 'decision_task_fk')->on('tasks')->references('id')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('grade_id', 'decision_grade_fk')->on('grades')->references('id');
             $table->foreign('completed_id', 'decision_completed_fk')->on('decision_completed')->references('id');
         });
 

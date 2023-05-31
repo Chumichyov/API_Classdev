@@ -26,6 +26,11 @@ class Folder extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function files()
     {
         return $this->hasMany(File::class, 'folder_id');

@@ -16,6 +16,11 @@ class Course extends Model
         return $this->hasOne(CourseInformation::class);
     }
 
+    public function messengers()
+    {
+        return $this->hasMany(Messenger::class);
+    }
+
     public function tasks()
     {
         return $this->hasMany(Task::class);

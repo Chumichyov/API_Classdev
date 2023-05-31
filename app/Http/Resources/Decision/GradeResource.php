@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Review;
+namespace App\Http\Resources\Decision;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ReviewResource extends JsonResource
+class GradeResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,12 +16,9 @@ class ReviewResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'creator_id' => $this->creator_id,
-            'start' => $this->start,
-            'end' => $this->end,
-            'color' => $this->color,
-            'title' => $this->title,
-            'description' => $this->description,
+            'task_id' => $this->task_id,
+            'completed_id' => $this->completed_id,
+            'grade' => $this->grade
         ];
     }
 }

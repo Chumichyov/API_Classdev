@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('file_id');
+            $table->unsignedBigInteger('folder_id');
             $table->unsignedBigInteger('creator_id');
             $table->integer('start');
             $table->integer('end');
@@ -27,9 +28,11 @@ return new class extends Migration
             // Relationships
 
             $table->index('file_id', 'review_file_idx');
+            $table->index('folder_id', 'review_folder_idx');
             $table->index('creator_id', 'review_creator_idx');
 
             $table->foreign('file_id', 'review_file_fk')->on('files')->references('id');
+            $table->foreign('folder_id', 'review_folder_fk')->on('folders')->references('id');
             $table->foreign('creator_id', 'review_creator_fk')->on('users')->references('id');
         });
     }

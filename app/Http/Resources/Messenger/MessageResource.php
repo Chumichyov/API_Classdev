@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Review;
+namespace App\Http\Resources\Messenger;
 
+use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ReviewResource extends JsonResource
+class MessageResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,12 +17,10 @@ class ReviewResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'creator_id' => $this->creator_id,
-            'start' => $this->start,
-            'end' => $this->end,
-            'color' => $this->color,
-            'title' => $this->title,
-            'description' => $this->description,
+            'sender' => $this->sender_id,
+            'recipient' => $this->recipient_id,
+            'content' => $this->content,
+            'created_at' => $this->created_at,
         ];
     }
 }

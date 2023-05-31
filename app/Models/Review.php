@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Review extends Model
 {
     use HasFactory;
-    protected $fillable = ['file_id', 'creator_id', 'start', 'end', 'color', 'title', 'description'];
+    protected $fillable = ['file_id', 'folder_id', 'creator_id', 'start', 'end', 'color', 'title', 'description'];
 
     public function creator()
     {
@@ -18,5 +18,10 @@ class Review extends Model
     public function file()
     {
         return $this->belongsTo(File::class);
+    }
+
+    public function folder()
+    {
+        return $this->belongsTo(Folder::class);
     }
 }

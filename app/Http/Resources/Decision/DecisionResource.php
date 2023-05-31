@@ -19,7 +19,7 @@ class DecisionResource extends JsonResource
             'user' => new UserResource(User::find($this->user_id)),
             'task' => new TaskResource($this->whenLoaded('task')),
             'description' => $this->description,
-            'grade' => new GradeResource($this->whenLoaded('grade')),
+            'grade' => $this->grade,
             'files' => FileResource::collection($this->whenLoaded('files')),
             'folders' => FolderResource::collection($this->whenLoaded('folders')),
             'completed' => new CompletedResource($this->whenLoaded('completed')),

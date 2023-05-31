@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Decision;
+namespace App\Http\Requests\Messenger;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateRequest extends FormRequest
+class StoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,7 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'description' => ['string', 'nullable'],
-            'completed' => ['integer', 'nullable'],
-            'grade' => ['integer', 'nullable'],
+            'content' => ['required', 'string'],
         ];
     }
 }

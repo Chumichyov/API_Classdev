@@ -9,7 +9,7 @@ class Decision extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'task_id', 'description', 'grade_id', 'completed_id'];
+    protected $fillable = ['user_id', 'task_id', 'description', 'grade', 'completed_id'];
 
     public function user()
     {
@@ -24,11 +24,6 @@ class Decision extends Model
     public function task()
     {
         return $this->belongsTo(Task::class);
-    }
-
-    public function grade()
-    {
-        return $this->belongsTo(Grade::class);
     }
 
     public function files()

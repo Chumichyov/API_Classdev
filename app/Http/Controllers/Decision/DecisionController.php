@@ -54,7 +54,6 @@ class DecisionController extends Controller
 
         $decision->loadMissing([
             'task',
-            'grade',
             'completed'
         ]);
 
@@ -76,7 +75,6 @@ class DecisionController extends Controller
 
         $decision->loadMissing([
             'task',
-            'grade',
             'completed',
         ]);
 
@@ -100,34 +98,30 @@ class DecisionController extends Controller
     public function update(UpdateRequest $request, Course $course, Task $task, Decision $decision)
     {
         $credentials = $request->validated();
-        if ($credentials['completed'] == null) {
-            $decision->update([
-                'description' => $credentials['description']
+
+        $decision->update([
+            'grade' => $credentials['grade'],
+            'description' => $credentials['description'],
+            'completed_id' => $credentials['completed']
+        ]);
+
+
+        if (isset($credentials['completed']) && $credentials['completed'] != 1 && auth()->user()->id != $course->leader_id) {
+            Notification::create([
+                'type_id' => 4,
+                'recipient_id' => $course->leader_id,
+                'user_id' => auth()->user()->id,
+                'course_id' => $course->id,
+                'task_id' => $task->id,
+                'decision_id' => $decision->id,
+                'message' => "В курсе '" . $course->title . "' пользователь " . auth()->user()->name . ' ' . auth()->user()->surname . " сдал решение к заданию '" . $task->title . "'",
             ]);
         } else {
-            $decision->update([
-                'description' => $credentials['description'],
-                'completed_id' => $credentials['completed']
-            ]);
-
-            if ($credentials['completed'] != 1) {
-                Notification::create([
-                    'type_id' => 4,
-                    'recipient_id' => $course->leader_id,
-                    'user_id' => auth()->user()->id,
-                    'course_id' => $course->id,
-                    'task_id' => $task->id,
-                    'decision_id' => $decision->id,
-                    'message' => "В курсе '" . $course->title . "' пользователь " . auth()->user()->name . ' ' . auth()->user()->surname . " сдал решение к заданию '" . $task->title . "'",
-                ]);
-            } else {
-                Notification::where('course_id', $course->id)->where('task_id', $task->id)->where('decision_id', $decision->id)->where('recipient_id', $course->leader_id)->where('user_id', auth()->user()->id)->delete();
-            }
+            Notification::where('course_id', $course->id)->where('task_id', $task->id)->where('decision_id', $decision->id)->where('recipient_id', $course->leader_id)->where('user_id', auth()->user()->id)->delete();
         }
 
         $decision->loadMissing([
             'task',
-            'grade',
             'completed'
         ]);
 

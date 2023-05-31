@@ -31,10 +31,9 @@ class ForDecisionMembers
                 return $next($request);
         }
 
-        if (!is_null($decision->task->course->members->where('id', auth()->user()->id)->first()) || (Route::currentRouteName() == 'decision.authShow' && !is_null($task->course->members->where('id', auth()->user()->id)->first()))) {
+        if ((!is_null($decision->task->course->members->where('id', auth()->user()->id)->first()) || (Route::currentRouteName() == 'decision.authShow' && !is_null($task->course->members->where('id', auth()->user()->id)->first()))) && $decision->completed_id != 1) {
             return $next($request);
         }
-
         return response()->json(['error_message' => 'Запрещено'], 403);
     }
 }

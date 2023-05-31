@@ -21,6 +21,7 @@ class FileResource extends JsonResource
             'user' => new UserResource($this->whenLoaded('user')),
             'extension' => new FileExtensionResource(FileExtension::find($this->file_extension_id)),
             'original_name' => $this->original_name,
+            'reviews' => $this->reviews->count(),
             'file_name' => $this->file_name,
             'file_path' => $this->file_path,
         ];

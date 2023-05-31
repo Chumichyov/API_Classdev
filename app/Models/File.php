@@ -38,6 +38,6 @@ class File extends Model
 
     public function folder()
     {
-        return $this->belongsTo(DecisionFolder::class, 'folder_id');
+        return $this->belongsTo(Folder::class, 'folder_id');
     }
 }

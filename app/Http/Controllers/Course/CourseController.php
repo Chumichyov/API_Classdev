@@ -10,9 +10,12 @@ use App\Http\Requests\Course\StoreImageRequest;
 use App\Http\Requests\Course\StoreRequest;
 use App\Http\Requests\Course\UpdateRequest;
 use App\Http\Resources\Course\CourseResource;
+use App\Http\Resources\User\UserResource;
 use App\Models\Course;
 use App\Models\CourseInformation;
 use App\Models\CourseUser;
+use App\Models\Messenger;
+use App\Models\Notification;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -86,12 +89,37 @@ class CourseController extends Controller
         }
     }
 
+
+    public function members(Course $course)
+    {
+        $members = $course->members->loadMissing([
+            'student' => function (Builder $query) use ($course) {
+                $query->where('course_id', $course->id);
+            },
+            'decisions' => function (Builder $query) {
+                $query->orderBy('created_at', 'desc');
+            },
+        ]);
+
+        return UserResource::collection($members);
+    }
+
     public function show(Course $course)
     {
         $course->loadMissing([
             'information',
-            'members',
+            'members'
         ]);
+
+        $course->members->loadMissing([
+            'student' => function (Builder $query) use ($course) {
+                $query->where('course_id', $course->id);
+            },
+            'decisions' => function (Builder $query) {
+                $query->orderBy('created_at', 'desc');
+            },
+        ]);
+
         return new CourseResource($course);
     }
 
@@ -124,18 +152,33 @@ class CourseController extends Controller
         }
 
         if (!is_null($course)) {
-
             if (!is_null($course->course->members->where('id', auth()->user()->id)->first())) {
                 return response(['error_message' => 'Вы уже состоите в данном курсе']);
             }
 
             CourseUser::create([
-                'course_id' => $course->id,
+                'course_id' => $course->course_id,
                 'user_id' => auth()->user()->id,
             ]);
+
+            $messenger = Messenger::create([
+                'course_id' => $course->course_id,
+                'teacher_id' => $course->course->leader_id,
+                'student_id' => auth()->user()->id,
+            ]);
+
+            $notification = Notification::create([
+                'type_id' => 2,
+                'recipient_id' => $course->course->leader_id,
+                'user_id' => auth()->user()->id,
+                'course_id' => $course->course_id,
+                'message' => 'В курсе ' . $course->course->title . ' появился новый участник: ' . auth()->user()->name . ' ' . auth()->user()->surname
+            ]);
+
+            return new CourseResource($course->course);
         }
 
-        return response(['success_message' => 'Вы успешно присоединились к курсу']);
+        return response()->json(['error_message' => 'Запрещено'], 403);
     }
 
     public function leave(Course $course)
@@ -156,6 +199,9 @@ class CourseController extends Controller
         if ($member) {
             $member->delete();
         }
+
+        $messenger = Messenger::where('course_id', $course->id)->where('student_id', $user->id)->first();
+        $messenger->delete();
 
         return response(['success_message' => 'Вы успешно выгнали участника']);
     }
