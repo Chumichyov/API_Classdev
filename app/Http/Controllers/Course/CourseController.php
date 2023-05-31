@@ -187,6 +187,10 @@ class CourseController extends Controller
 
         if ($member) {
             $member->delete();
+            $messenger = Messenger::where('course_id', $course->id)->where('student_id', auth()->user()->id)->first();
+
+            if ($messenger != null)
+                $messenger->delete();
         }
 
         return response(['success_message' => 'Вы успешно покинули курс']);
@@ -201,7 +205,8 @@ class CourseController extends Controller
         }
 
         $messenger = Messenger::where('course_id', $course->id)->where('student_id', $user->id)->first();
-        $messenger->delete();
+        if ($messenger != null)
+            $messenger->delete();
 
         return response(['success_message' => 'Вы успешно выгнали участника']);
     }

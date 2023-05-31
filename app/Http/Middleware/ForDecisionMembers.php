@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Course;
 use App\Models\Decision;
 use App\Models\Task;
 use Closure;
@@ -20,20 +21,23 @@ class ForDecisionMembers
     public function handle(Request $request, Closure $next)
     {
         $decision = $request->route('decision');
+        $course = $request->route('decision');
         $task = $request->route('task');
 
         gettype($decision) == 'string' ? $decision = Decision::findOrFail($decision) : '';
+        gettype($course) == 'string' ? $course = Course::findOrFail($course) : '';
         gettype($task) == 'string' ? $task = Task::findOrFail($task) : '';
+
 
         if (Route::currentRouteName() == 'decision.authShow') {
             $decision = Decision::where('task_id', $task->id)->where('user_id', auth()->user()->id)->first();
-            if (is_null($decision))
-                return $next($request);
-        }
-
-        if ((!is_null($decision->task->course->members->where('id', auth()->user()->id)->first()) || (Route::currentRouteName() == 'decision.authShow' && !is_null($task->course->members->where('id', auth()->user()->id)->first()))) && $decision->completed_id != 1) {
             return $next($request);
         }
+
+        if ((!is_null($decision) && (!is_null($decision->task->course->members->where('id', auth()->user()->id)->first())) || (Route::currentRouteName() == 'decision.authShow' && !is_null($task->course->members->where('id', auth()->user()->id)->first())))) {
+            return $next($request);
+        }
+
         return response()->json(['error_message' => 'Запрещено'], 403);
     }
 }

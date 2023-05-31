@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -29,6 +30,19 @@ return new class extends Migration
             $table->foreign('teacher_id', 'messenger_teacher_fk')->on('users')->references('id');
             $table->foreign('student_id', 'messenger_student_fk')->on('users')->references('id');
         });
+
+        DB::table('messengers')->insert([
+            [
+                'course_id' => 1,
+                'teacher_id' => 2,
+                'student_id' => 3,
+            ],
+            [
+                'course_id' => 1,
+                'teacher_id' => 2,
+                'student_id' => 4,
+            ],
+        ]);
     }
 
     /**
