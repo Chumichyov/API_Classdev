@@ -13,6 +13,7 @@ use App\Models\Task;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use ZipArchive;
 
 class FolderController extends Controller
 {
@@ -174,6 +175,26 @@ class FolderController extends Controller
         } catch (Exception $e) {
             return response(['error_message' => 'Непредвиденная ошибка. Пожалуйста, повторите попытку']);
         }
+    }
+
+    public function taskFolderDownload(Course $course, Task $task, Folder $folder)
+    {
+        $zip = new ZipArchive;
+
+        $fileName = `$folder->original_name.zip`;
+
+        if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE) {
+            $files = File::files(mb_substr(public_path($folder->folder_path), 9));
+
+            foreach ($files as $key => $value) {
+                $relativeNameInZipFile = basename($value);
+                $zip->addFile($value, $relativeNameInZipFile);
+            }
+
+            $zip->close();
+        }
+
+        return response()->download(public_path($fileName));
     }
 
     public function DecisionFolderDestroy(Course $course, Task $task, Decision $decision, Folder $folder)

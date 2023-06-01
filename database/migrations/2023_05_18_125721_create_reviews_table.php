@@ -31,8 +31,8 @@ return new class extends Migration
             $table->index('folder_id', 'review_folder_idx');
             $table->index('creator_id', 'review_creator_idx');
 
-            $table->foreign('file_id', 'review_file_fk')->on('files')->references('id');
-            $table->foreign('folder_id', 'review_folder_fk')->on('folders')->references('id');
+            $table->foreign('file_id', 'review_file_fk')->on('files')->references('id')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('folder_id', 'review_folder_fk')->on('folders')->references('id')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('creator_id', 'review_creator_fk')->on('users')->references('id');
         });
     }

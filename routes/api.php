@@ -42,6 +42,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
 
         Route::group(['namespace' => 'User'], function () {
             Route::post('/user', 'UserController@show');
+            Route::patch('/user/{user}/update', 'UserController@update');
+            Route::post('/user/{user}/update', 'UserController@update');
         });
 
         Route::group(['namespace' => 'Notification'], function () {
